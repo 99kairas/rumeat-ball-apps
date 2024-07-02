@@ -101,10 +101,11 @@ class RegisterScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(
+                SizedBox(
                   width: double.infinity,
                   child: CustomFilledButton(
                     title: "Sign Up",
+                    onPressed: () {},
                     height: 52,
                     width: 327,
                   ),

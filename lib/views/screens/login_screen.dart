@@ -80,10 +80,11 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(
+                SizedBox(
                   width: double.infinity,
                   child: CustomFilledButton(
                     title: "Sign In",
+                    onPressed: () {},
                     height: 52,
                     width: 327,
                   ),

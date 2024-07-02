@@ -1,6 +1,8 @@
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:rumeat_ball_apps/views/screens/forgot_password_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/login_screen.dart';
+import 'package:rumeat_ball_apps/views/screens/otp_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/register_screen.dart';
 // import 'package:rumeat_ball_apps/views/screens/onboarding_screen.dart';
 
@@ -33,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
         duration: const Duration(milliseconds: 3500),
         animationDuration: const Duration(milliseconds: 2000),
         onAnimationEnd: () => debugPrint("On Scale End"),
-        nextScreen: const RegisterScreen(),
+        nextScreen: const OTPScreen(),
       ),
     );
   }
