@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 import 'package:rumeat_ball_apps/views/widgets/buttons.dart';
+import 'package:rumeat_ball_apps/views/widgets/forms.dart';
 
 class OTPScreen extends StatelessWidget {
   const OTPScreen({super.key});
@@ -51,16 +53,26 @@ class OTPScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
                     6,
-                    (index) => Container(
-                      margin: const EdgeInsets.only(right: 8),
-                      width: 45,
-                      height: 50,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: greyColor,
+                    (index) => Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        width: 65,
+                        height: 70,
+                        child: TextFormField(
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(1)
+                          ],
+                          textAlign: TextAlign.center,
+                          style: blackTextStyle.copyWith(
+                            fontSize: 20,
+                            fontWeight: semiBold,
+                          ),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
