@@ -1,12 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 import 'package:rumeat_ball_apps/views/widgets/buttons.dart';
 import 'package:rumeat_ball_apps/views/widgets/forms.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,13 +12,13 @@ class LoginScreen extends StatelessWidget {
       body: ListView(
         children: [
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 100),
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            margin: const EdgeInsets.symmetric(vertical: 25),
+            padding: const EdgeInsets.symmetric(horizontal: 25),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Login to your \naccount.",
+                  "Create your new\naccount.",
                   style: blackTextStyle.copyWith(
                     fontSize: 32,
                     fontWeight: semiBold,
@@ -30,7 +28,7 @@ class LoginScreen extends StatelessWidget {
                   height: 8,
                 ),
                 Text(
-                  "Please sign in to your account ",
+                  "Create an account to start looking for the food you like",
                   style: greyTextStyle.copyWith(
                     fontSize: 16,
                     fontWeight: regular,
@@ -45,8 +43,31 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(
                   height: 14,
                 ),
+                const CustomFormField(
+                  title: "User Name",
+                ),
+                const SizedBox(
+                  height: 14,
+                ),
                 CustomFormField(
                   title: "Password",
+                  obscureText: true,
+                  suffixIcon: IconButton(
+                    onPressed: null,
+                    icon: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Image.asset(
+                        "assets/icons/ic_eye_lock.png",
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 14,
+                ),
+                CustomFormField(
+                  title: "Confirm Password",
                   obscureText: true,
                   suffixIcon: IconButton(
                     onPressed: null,
@@ -83,19 +104,19 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(
                   width: double.infinity,
                   child: CustomFilledButton(
-                    title: "Sign In",
+                    title: "Sign Up",
                     height: 52,
                     width: 327,
                   ),
                 ),
                 const SizedBox(
-                  height: 50,
+                  height: 25,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Don't have an account?",
+                      "Already have an account?",
                       style: blackTextStyle.copyWith(
                         fontSize: 14,
                         fontWeight: regular,
@@ -104,7 +125,7 @@ class LoginScreen extends StatelessWidget {
                     TextButton(
                       onPressed: () {},
                       child: Text(
-                        "Register",
+                        "Sign In",
                         style: primaryTextStyle.copyWith(
                           fontSize: 14,
                           fontWeight: regular,
@@ -112,6 +133,9 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(
+                  height: 20,
                 ),
               ],
             ),
