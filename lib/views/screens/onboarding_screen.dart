@@ -61,7 +61,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         fontWeight: regular,
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.12),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.012,
+                    ),
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          3,
+                          (index) => buildDot(index, context),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.07),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
@@ -70,7 +82,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           child: Text(
                             "Skip",
                             style: whiteTextStyle.copyWith(
-                              fontSize: 12,
+                              fontSize: 17,
                               fontWeight: regular,
                             ),
                           ),
@@ -80,7 +92,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           child: Text(
                             "Next",
                             style: whiteTextStyle.copyWith(
-                              fontSize: 12,
+                              fontSize: 17,
                               fontWeight: regular,
                             ),
                           ),
@@ -93,6 +105,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Container buildDot(int index, BuildContext context) {
+    return Container(
+      height: 6,
+      width: currentIndex == index ? 24 : 24,
+      margin: const EdgeInsets.only(right: 15),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: currentIndex == index
+            ? whiteColor
+            : (Colors.grey),
       ),
     );
   }
