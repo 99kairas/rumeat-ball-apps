@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:rumeat_ball_apps/views/themes/style.dart';
+import 'package:rumeat_ball_apps/views/widgets/buttons.dart';
 
 class DetailsMenuScreen extends StatelessWidget {
   const DetailsMenuScreen({super.key});
@@ -19,14 +22,22 @@ class DetailsMenuScreen extends StatelessWidget {
               ),
             ),
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
+              icon: Icon(Icons.arrow_back, color: whiteColor),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
+            title: Text(
+              "About This Menu",
+              style: whiteTextStyle.copyWith(
+                fontSize: 16,
+                fontWeight: semiBold,
+              ),
+            ),
+            centerTitle: true,
             actions: [
               IconButton(
-                icon: const Icon(Icons.favorite_border, color: Colors.white),
+                icon: Icon(Icons.favorite_border, color: whiteColor),
                 onPressed: () {},
               ),
             ],
@@ -34,97 +45,114 @@ class DetailsMenuScreen extends StatelessWidget {
           SliverList(
             delegate: SliverChildListDelegate(
               [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Burger With Meat 🍔',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: blackTextStyle.copyWith(
+                            fontSize: 24, fontWeight: semiBold),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         'Rp. 25.000',
-                        style: TextStyle(
+                        style: primaryTextStyle.copyWith(
                           fontSize: 20,
-                          color: Colors.orange,
+                          fontWeight: semiBold,
+                          color: primaryColor,
                         ),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Row(
                         children: [
                           Chip(
                             avatar:
-                                Icon(Icons.shopping_bag, color: Colors.orange),
-                            label: Text('Take Away'),
+                                Icon(Icons.shopping_bag, color: primaryColor),
+                            label: Text(
+                              'Take Away',
+                              style: greyTextStyle.copyWith(),
+                            ),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Chip(
-                            avatar: Icon(Icons.comment, color: Colors.orange),
-                            label: Text('Comment'),
+                            avatar: Icon(Icons.comment, color: primaryColor),
+                            label: Text(
+                              '5',
+                              style: greyTextStyle.copyWith(),
+                            ),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Chip(
-                            avatar: Icon(Icons.star, color: Colors.orange),
-                            label: Text('4.5'),
+                            avatar: Icon(Icons.star, color: primaryColor),
+                            label: Text(
+                              '4.5',
+                              style: greyTextStyle.copyWith(),
+                            ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Text(
                         'Description',
-                        style: TextStyle(
+                        style: blackTextStyle.copyWith(
                           fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: semiBold,
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         'Burger With Meat is a typical food from our restaurant that is much in demand by many people, this is very recommended for you.',
-                        style: TextStyle(fontSize: 16),
+                        style: greyTextStyle.copyWith(
+                          fontSize: 14,
+                          fontWeight: small,
+                        ),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Recommended For You',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                            'Comments',
+                            style: blackTextStyle.copyWith(
+                              fontSize: 16,
+                              fontWeight: semiBold,
                             ),
                           ),
-                          Text(
-                            'See All',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.orange,
+                          TextButton(
+                            onPressed: () => {},
+                            child: Text(
+                              'See All',
+                              style: primaryTextStyle.copyWith(
+                                fontSize: 16,
+                                fontWeight: semiBold,
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 16),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            RecommendedCard(
-                              image: 'assets/images/burger1.png',
-                              title: 'Burger',
-                            ),
-                            RecommendedCard(
-                              image: 'assets/images/burger2.png',
-                              title: 'Pizza',
-                            ),
-                            // Add more RecommendedCard widgets as needed
-                          ],
-                        ),
+                      const SizedBox(height: 16),
+                      const Column(
+                        children: [
+                          CommentCard(
+                            name:
+                                "RizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizki",
+                            rating: 5,
+                            description:
+                                'Desain antarmuka pengguna (UI design) adalah bagian penting dari pengembangan produk digital yang efektif. UI design melibatkan merancang antarmuka pengguna yang mudah digunakan dan menarik, serta memperhatikan aspek-aspek seperti navigasi, tata letak, interaksi, dan estetika visual. Kursus ini akan memberikan pengantar tentang UI design dan membahas prinsip-prinsip desain antarmuka pengguna yang baik.',
+                            profileImage: 'assets/images/burger1.png',
+                          ),
+                          CommentCard(
+                            name: "Rizki",
+                            rating: 2,
+                            description: 'Pizza',
+                            profileImage: 'assets/images/burger1.png',
+                          ),
+                          // Add more CommentCard widgets as needed
+                        ],
                       ),
-                      SizedBox(height: 80), // To ensure button is visible
+                      const SizedBox(height: 80), // To ensure button is visible
                     ],
                   ),
                 ),
@@ -140,32 +168,52 @@ class DetailsMenuScreen extends StatelessWidget {
           children: [
             Row(
               children: [
-                IconButton(
-                  icon: const Icon(Icons.remove, color: Colors.black),
-                  onPressed: () {},
+                Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: greyColor,
+                      ),
+                      borderRadius: BorderRadius.circular(100)),
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Icon(
+                      Icons.remove,
+                      color: blackColor,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 8),
                 const Text(
-                  '4',
+                  '1000',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(width: 8),
-                IconButton(
-                  icon: const Icon(Icons.add, color: Colors.black),
-                  onPressed: () {},
+                Container(
+                  margin: const EdgeInsets.only(left: 10),
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: greyColor,
+                      ),
+                      borderRadius: BorderRadius.circular(100)),
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Icon(
+                      Icons.add,
+                      color: blackColor,
+                    ),
+                  ),
                 ),
               ],
             ),
-            ElevatedButton(
+            CustomFilledButton(
               onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              child: const Text(
-                'Add to Cart',
-                style: TextStyle(fontSize: 18),
-              ),
+              title: "Add to Cart",
+              width: 183,
+              height: 52,
+              icon: Icons.shopping_cart,
             ),
           ],
         ),
@@ -174,30 +222,96 @@ class DetailsMenuScreen extends StatelessWidget {
   }
 }
 
-class RecommendedCard extends StatelessWidget {
-  final String image;
-  final String title;
+class CommentCard extends StatelessWidget {
+  final String name;
+  final String description;
+  final double rating;
+  final String profileImage;
 
-  const RecommendedCard({required this.image, required this.title});
+  const CommentCard({
+    required this.name,
+    required this.description,
+    required this.rating,
+    required this.profileImage,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(right: 16),
-      width: 120,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Image.asset(image, fit: BoxFit.cover),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ],
+      margin: const EdgeInsets.only(right: 16, bottom: 16),
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.grey,
+        ),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: Image.asset(
+                        profileImage,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.only(right: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RatingStars(
+                          starCount: 5,
+                          value: rating,
+                          valueLabelVisibility: false,
+                          starSize: 16,
+                          maxValueVisibility: false,
+                          starColor: primaryColor,
+                          starOffColor: greyColor,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          overflow: TextOverflow.ellipsis,
+                          name,
+                          style: blackTextStyle.copyWith(
+                            fontSize: 16,
+                            fontWeight: semiBold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          description,
+                          maxLines: 5,
+                          textAlign: TextAlign.justify,
+                          overflow: TextOverflow.ellipsis,
+                          style: blackTextStyle.copyWith(
+                            fontSize: 10,
+                            fontWeight: semiBold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

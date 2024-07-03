@@ -6,12 +6,15 @@ class CustomFilledButton extends StatelessWidget {
   final double? width;
   final double? height;
   final VoidCallback? onPressed;
+  final IconData? icon;
+
   const CustomFilledButton({
     super.key,
     required this.title,
     this.width = double.infinity,
     this.height = 50,
     this.onPressed,
+    this.icon,
   });
 
   @override
@@ -27,13 +30,30 @@ class CustomFilledButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(56),
           ),
         ),
-        child: Text(
-          title,
-          style: whiteTextStyle.copyWith(
-            fontSize: 16,
-            fontWeight: semiBold,
-          ),
-        ),
+        child: icon != null
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, color: whiteColor),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    title,
+                    style: whiteTextStyle.copyWith(
+                      fontSize: 16,
+                      fontWeight: semiBold,
+                    ),
+                  ),
+                ],
+              )
+            : Text(
+                title,
+                style: whiteTextStyle.copyWith(
+                  fontSize: 16,
+                  fontWeight: semiBold,
+                ),
+              ),
       ),
     );
   }
