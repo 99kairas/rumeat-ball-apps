@@ -42,6 +42,7 @@ class CustomFormField extends StatelessWidget {
           ),
         if (isShowTitle) const SizedBox(height: 8),
         TextFormField(
+          textCapitalization: TextCapitalization.words,
           obscureText: obscureText,
           controller: controller,
           obscuringCharacter: '*',
