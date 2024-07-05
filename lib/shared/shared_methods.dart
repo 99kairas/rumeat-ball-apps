@@ -74,7 +74,7 @@ class SharedPref {
 }
 
 class APIConstant {
-  // static String baseUrl = 'http://10.0.2.2:5000/api';
+  static String baseUrl = 'http://10.0.2.2:8080'; // THIS IS FOR LOCAL API DON'T CHANGE IT
   // static String baseUrl = 'https://spp-payment.up.railway.app/api';
   // static String imageUrl = 'http://10.0.2.2:5000';
   // static String imageUrl = 'https://spp-payment.up.railway.app';

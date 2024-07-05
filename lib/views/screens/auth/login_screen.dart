@@ -1,15 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:rumeat_ball_apps/views/screens/auth/login_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 import 'package:rumeat_ball_apps/views/widgets/buttons.dart';
 import 'package:rumeat_ball_apps/views/widgets/forms.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  @override
   Widget build(BuildContext context) {
+    final loginProvider = Provider.of<LoginViewModel>(context);
+
     return Scaffold(
       body: ListView(
         children: [
@@ -39,22 +48,28 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(
                   height: 32,
                 ),
-                const CustomFormField(
+                CustomFormField(
                   title: "Email Address",
+                  controller: loginProvider.emailController,
                 ),
                 const SizedBox(
                   height: 14,
                 ),
                 CustomFormField(
                   title: "Password",
-                  obscureText: true,
+                  controller: loginProvider.passwordController,
+                  obscureText: loginProvider.isHidePassword,
                   suffixIcon: IconButton(
-                    onPressed: null,
+                    onPressed: () {
+                      loginProvider.showHidePassword();
+                    },
                     icon: SizedBox(
                       width: 20,
                       height: 20,
                       child: Image.asset(
-                        "assets/icons/ic_eye_lock.png",
+                        loginProvider.isHidePassword
+                            ? "assets/icons/ic_eye_lock.png"
+                            : "assets/icons/ic_eye.png",
                       ),
                     ),
                   ),
@@ -66,7 +81,13 @@ class LoginScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/forgot-password',
+                          (route) => false,
+                        );
+                      },
                       child: Text(
                         "Forgot Password?",
                         style: primaryTextStyle.copyWith(
@@ -84,7 +105,9 @@ class LoginScreen extends StatelessWidget {
                   width: double.infinity,
                   child: CustomFilledButton(
                     title: "Sign In",
-                    onPressed: () {},
+                    onPressed: () {
+                      loginProvider.loginProvider(context);
+                    },
                     height: 52,
                     width: 327,
                   ),
@@ -103,7 +126,9 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/register');
+                      },
                       child: Text(
                         "Register",
                         style: primaryTextStyle.copyWith(

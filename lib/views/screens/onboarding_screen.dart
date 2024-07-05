@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:rumeat_ball_apps/views/screens/auth/login_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/onboarding_content.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 
@@ -110,12 +109,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     curve: Curves.linear,
                                   );
                                 } else {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const LoginScreen(),
-                                    ),
-                                  );
+                                  Navigator.pushReplacementNamed(
+                                      context, '/login');
                                 }
                               },
                               child: Text(
@@ -129,12 +124,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             TextButton(
                               onPressed: () {
                                 if (currentIndex == 2) {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const LoginScreen(),
-                                    ),
-                                  );
+                                  Navigator.pushReplacementNamed(
+                                      context, '/login');
                                 }
                                 _controller.nextPage(
                                   duration: const Duration(milliseconds: 400),
