@@ -56,6 +56,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ),
                     CustomFormField(
                       title: "New Password",
+                      errorMessage: "",
+                      isValid: false,
                       obscureText: true,
                       suffixIcon: IconButton(
                         onPressed: null,
@@ -74,6 +76,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ),
                     CustomFormField(
                       title: "Confirm Password",
+                      errorMessage: "",
+                      isValid: false,
                       obscureText: true,
                       suffixIcon: IconButton(
                         onPressed: null,

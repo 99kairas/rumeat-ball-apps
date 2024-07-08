@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rumeat_ball_apps/views/screens/auth/register_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 import 'package:rumeat_ball_apps/views/widgets/buttons.dart';
 import 'package:rumeat_ball_apps/views/widgets/forms.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
   @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  @override
   Widget build(BuildContext context) {
+    final registerProvider = Provider.of<RegisterViewModel>(context);
     return Scaffold(
       body: ListView(
         children: [
@@ -37,28 +45,62 @@ class RegisterScreen extends StatelessWidget {
                 const SizedBox(
                   height: 32,
                 ),
-                const CustomFormField(
+                CustomFormField(
                   title: "Email Address",
+                  keyboardType: TextInputType.emailAddress,
+                  controller: registerProvider.emailController,
+                  errorMessage: registerProvider.errorEmailMessage,
+                  onChanged: (email) {
+                    registerProvider.validateEmail(email);
+                  },
+                  isValid: registerProvider.isEmailValid,
                 ),
                 const SizedBox(
                   height: 14,
                 ),
-                const CustomFormField(
-                  title: "User Name",
+                CustomFormField(
+                  title: "Name",
+                  controller: registerProvider.nameController,
+                  errorMessage: registerProvider.errorNameMessage,
+                  isValid: registerProvider.isNameValid,
+                  onChanged: (name) {
+                    registerProvider.validateName(name);
+                  },
+                ),
+                const SizedBox(
+                  height: 14,
+                ),
+                CustomFormField(
+                  title: "Phone Number",
+                  keyboardType: TextInputType.phone,
+                  controller: registerProvider.phoneController,
+                  errorMessage: registerProvider.errorPhoneNumberMessage,
+                  isValid: registerProvider.isPhoneNumberValid,
+                  onChanged: (phone) {
+                    registerProvider.validatePhone(phone);
+                  },
                 ),
                 const SizedBox(
                   height: 14,
                 ),
                 CustomFormField(
                   title: "Password",
-                  obscureText: true,
+                  controller: registerProvider.passwordController,
+                  obscureText: registerProvider.isHidePassword,
+                  errorMessage: registerProvider.errorPasswordMessage,
+                  isValid: registerProvider.isPasswordValid,
                   suffixIcon: IconButton(
-                    onPressed: null,
+                    onPressed: () {
+                      registerProvider.showHidePassword();
+                    },
                     icon: SizedBox(
                       width: 20,
                       height: 20,
                       child: Image.asset(
-                        "assets/icons/ic_eye_lock.png",
+                        color: blackColor,
+                        registerProvider.isHidePassword
+                            ? "assets/icons/ic_eye_lock.png"
+                            : "assets/icons/ic_eye.png",
                       ),
                     ),
                   ),
@@ -67,15 +109,27 @@ class RegisterScreen extends StatelessWidget {
                   height: 14,
                 ),
                 CustomFormField(
-                  title: "Confirm Password",
-                  obscureText: true,
+                  onChanged: (value) {
+                    registerProvider.validateConfirmPassword(value);
+                  },
+                  controller: registerProvider.confirmPasswordController,
+                  title: 'Confirm Password',
+                  hintText: '*****',
+                  errorMessage: registerProvider.errorConfirmPasswordMessage,
+                  isValid: registerProvider.isConfirmPasswordValid,
+                  obscureText: registerProvider.isHideConfirmPassword,
                   suffixIcon: IconButton(
-                    onPressed: null,
+                    onPressed: () {
+                      registerProvider.showHideConfirmPassword();
+                    },
                     icon: SizedBox(
                       width: 20,
                       height: 20,
                       child: Image.asset(
-                        "assets/icons/ic_eye_lock.png",
+                        color: blackColor,
+                        registerProvider.isHideConfirmPassword
+                            ? "assets/icons/ic_eye_lock.png"
+                            : "assets/icons/ic_eye.png",
                       ),
                     ),
                   ),
@@ -105,7 +159,9 @@ class RegisterScreen extends StatelessWidget {
                   width: double.infinity,
                   child: CustomFilledButton(
                     title: "Sign Up",
-                    onPressed: () {},
+                    onPressed: () {
+                      registerProvider.registerProvider(context);
+                    },
                     height: 52,
                     width: 327,
                   ),

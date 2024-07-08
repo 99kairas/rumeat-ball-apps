@@ -86,6 +86,8 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
           const CustomFormField(
             title: "Full Name",
             hintText: "John Doe",
+            errorMessage: "",
+            isValid: false,
           ),
           const SizedBox(
             height: 12,
@@ -97,6 +99,8 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
                 title: "Date of Birth",
                 hintText: "19/06/1999",
                 controller: _dateController,
+                errorMessage: "",
+                isValid: false,
               ),
             ),
           ),
@@ -120,6 +124,8 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
           const CustomFormField(
             title: "Phone Number",
             hintText: "John Doe",
+            errorMessage: "",
+            isValid: false,
           ),
           const SizedBox(
             height: 12,
@@ -127,6 +133,8 @@ class _PersonalDataScreenState extends State<PersonalDataScreen> {
           const CustomFormField(
             title: "Email",
             hintText: "John Doe",
+            errorMessage: "",
+            isValid: false,
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.15,

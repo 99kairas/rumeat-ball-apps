@@ -42,6 +42,9 @@ class ForgotPasswordScreen extends StatelessWidget {
                 const CustomFormField(
                   title: "Email Address",
                   hintText: "emailAnda@email.com",
+                  errorMessage: "",
+                  isValid: false,
+
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.5,

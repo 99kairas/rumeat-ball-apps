@@ -12,6 +12,8 @@ class CustomFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool? enabled;
   final double? letterSpacing;
+  final bool isValid;
+  final String errorMessage;
 
   const CustomFormField({
     super.key,
@@ -25,6 +27,8 @@ class CustomFormField extends StatelessWidget {
     this.keyboardType,
     this.enabled,
     this.letterSpacing,
+    required this.isValid,
+    required this.errorMessage,
   });
 
   @override
@@ -62,6 +66,17 @@ class CustomFormField extends StatelessWidget {
             contentPadding: const EdgeInsets.all(12),
           ),
         ),
+        if (!isValid)
+          Padding(
+            padding: const EdgeInsets.only(left: 5, top: 5),
+            child: Text(
+              errorMessage ?? "",
+              style: const TextStyle(
+                color: Colors.red,
+                fontSize: 12,
+              ),
+            ),
+          ),
       ],
     );
   }

@@ -51,6 +51,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 CustomFormField(
                   title: "Email Address",
                   controller: loginProvider.emailController,
+                  isValid: loginProvider.isEmailValid,
+                  errorMessage: loginProvider.errorEmailMessage,
+                  onChanged: (p0) {
+                    loginProvider.validateEmail(p0);
+                  },
                 ),
                 const SizedBox(
                   height: 14,
@@ -73,6 +78,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
+                  isValid: loginProvider.isPasswordValid,
+                  errorMessage: loginProvider.errorPasswordMessage,
+                  onChanged: (p0) {
+                    loginProvider.validatePassword(p0);
+                  },
                 ),
                 const SizedBox(
                   height: 24,
@@ -128,6 +138,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/register');
+                        loginProvider.emailController.clear();
+                        loginProvider.passwordController.clear();
                       },
                       child: Text(
                         "Register",
