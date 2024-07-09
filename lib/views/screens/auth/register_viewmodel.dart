@@ -9,6 +9,9 @@ class RegisterViewModel with ChangeNotifier {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   // Email Property
   String _email = "";
   String get email => _email;
@@ -147,15 +150,24 @@ class RegisterViewModel with ChangeNotifier {
     validatePassword(passwordController.text);
     validateConfirmPassword(confirmPasswordController.text);
 
-    return _isEmailValid && _isNameValid && _isPhoneNumberValid && _isPasswordValid && _isConfirmPasswordValid;
+    return _isEmailValid &&
+        _isNameValid &&
+        _isPhoneNumberValid &&
+        _isPasswordValid &&
+        _isConfirmPasswordValid;
   }
 
   // Provider
   registerProvider(BuildContext context) async {
     if (!validateAllFields()) {
-      scaffoldMessengerFailed(context: context, title: 'Please fill in all fields correctly');
+      scaffoldMessengerFailed(
+          context: context, title: 'Please fill in all fields correctly');
       return;
     }
+
+    _isLoading = true;
+    notifyListeners(); // Notify listeners that loading started
+    print("Loading started: $_isLoading");
 
     Dio dio = Dio();
     try {
@@ -175,13 +187,20 @@ class RegisterViewModel with ChangeNotifier {
           context: context,
           title: response.data['message'],
         );
+        await Future.delayed(const Duration(seconds: 1));
         navigateToOTPScreen(context);
       } else {
-        scaffoldMessengerFailed(context: context, title: response.data['response']);
+        scaffoldMessengerFailed(
+            context: context, title: response.data['response']);
       }
     } on DioException catch (e) {
-      scaffoldMessengerFailed(context: context, title: '${e.response?.data['response']}');
+      scaffoldMessengerFailed(
+          context: context, title: '${e.response?.data['response']}');
     }
+
+    _isLoading = false;
+    notifyListeners(); // Notify listeners that loading finished
+    print("Loading finished: $_isLoading");
   }
   // End of Provider
 
@@ -190,6 +209,7 @@ class RegisterViewModel with ChangeNotifier {
       context,
       '/otp',
       (route) => false,
+      arguments: emailController.text,
     );
     emailController.clear();
     passwordController.clear();

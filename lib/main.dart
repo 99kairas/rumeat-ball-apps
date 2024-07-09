@@ -5,7 +5,8 @@ import 'package:rumeat_ball_apps/views/screens/auth/login_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/auth/register_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/auth/register_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/home_screen.dart';
-import 'package:rumeat_ball_apps/views/screens/otp_screen.dart';
+import 'package:rumeat_ball_apps/views/screens/otp/otp_screen.dart';
+import 'package:rumeat_ball_apps/views/screens/otp/otp_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/splash_screen.dart';
 
 void main() {
@@ -17,6 +18,9 @@ void main() {
         ),
         ChangeNotifierProvider<RegisterViewModel>(
           create: (_) => RegisterViewModel(),
+        ),
+        ChangeNotifierProvider<OTPViewModel>(
+          create: (_) => OTPViewModel(),
         ),
       ],
       child: const MyApp(),
@@ -37,7 +41,12 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/home': (context) => const HomeScreen(),
         '/register': (context) => const RegisterScreen(),
-        '/otp': (context) => const OTPScreen(),
+        '/otp': (context) {
+          final email = ModalRoute.of(context)!.settings.arguments as String;
+          return OTPScreen(
+            email: email,
+          );
+        },
       },
     );
   }
