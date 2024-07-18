@@ -10,7 +10,7 @@ class Utility {
 
 String formatCurrency(
   num number, {
-  String symbol = 'Rp ',
+  String symbol = 'Rp',
 }) {
   return NumberFormat.currency(
     locale: 'id',

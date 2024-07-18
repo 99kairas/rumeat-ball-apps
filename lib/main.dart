@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rumeat_ball_apps/models/get_all_menu_response.dart';
 import 'package:rumeat_ball_apps/views/screens/auth/login_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/auth/login_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/auth/register_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/auth/register_viewmodel.dart';
-import 'package:rumeat_ball_apps/views/screens/home_screen.dart';
+import 'package:rumeat_ball_apps/views/screens/home/home_screen.dart';
+import 'package:rumeat_ball_apps/views/screens/home/home_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/otp/otp_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/otp/otp_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/splash_screen.dart';
@@ -21,6 +23,9 @@ void main() {
         ),
         ChangeNotifierProvider<OTPViewModel>(
           create: (_) => OTPViewModel(),
+        ),
+        ChangeNotifierProvider<HomeViewModel>(
+          create: (_) => HomeViewModel(),
         ),
       ],
       child: const MyApp(),
