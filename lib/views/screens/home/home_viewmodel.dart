@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rumeat_ball_apps/models/get_all_categories_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_menu_response.dart';
-import 'package:rumeat_ball_apps/services/user_get_all_menu_service.dart';
+import 'package:rumeat_ball_apps/services/home_service.dart';
 
 class HomeViewModel with ChangeNotifier {
   bool _isLoading = false;

@@ -1,15 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:rumeat_ball_apps/views/screens/personal_data_screen.dart';
+import 'package:rumeat_ball_apps/views/screens/profile/profile_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 import 'package:rumeat_ball_apps/views/widgets/buttons.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  @override
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<ProfileViewModel>(context, listen: false).getUserInfo(context);
+  }
+
   Widget build(BuildContext context) {
+    final profileProvider = Provider.of<ProfileViewModel>(context);
+    final _user = profileProvider.user;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -36,11 +51,13 @@ class ProfileScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: greyColor,
                       borderRadius: BorderRadius.circular(61),
-                      image: const DecorationImage(
-                        image: AssetImage(
-                          "assets/images/profile1.png",
-                        ),
-                      ),
+                      image: DecorationImage(
+                          image: _user?.profileImage != "" || _user?.profileImage != null
+                              ? NetworkImage(_user?.profileImage ?? "")
+                                  as ImageProvider
+                              : const AssetImage(
+                                  'assets/images/profile1.png',
+                                )),
                     ),
                   ),
                   Positioned(
@@ -65,7 +82,7 @@ class ProfileScreen extends StatelessWidget {
                 ],
               ),
               Text(
-                "Rizki Andika Setiadi",
+                _user?.name ?? "",
                 textAlign: TextAlign.justify,
                 style: blackTextStyle.copyWith(
                   fontSize: 20,
@@ -77,7 +94,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               Text(
                 textAlign: TextAlign.justify,
-                "rizki1@gmail.com",
+                _user?.email ?? "",
                 style: greyTextStyle.copyWith(
                   fontSize: 15,
                   fontWeight: regular,

@@ -5,11 +5,13 @@ Color whiteColor = const Color(0xffF5F5FF);
 Color blackColor = const Color(0xff0F0F0F);
 Color greyColor = const Color(0xff878787);
 Color redColor = const Color(0xffF14141);
+Color greenColor = const Color(0xff46B277);
 
 TextStyle whiteTextStyle = TextStyle(fontFamily: 'Poppins', color: whiteColor);
 TextStyle blackTextStyle = TextStyle(fontFamily: 'Poppins', color: blackColor);
 TextStyle greyTextStyle = TextStyle(fontFamily: 'Poppins', color: greyColor);
 TextStyle redTextStyle = TextStyle(fontFamily: 'Poppins', color: redColor);
+TextStyle greenTextStyle = TextStyle(fontFamily: 'Poppins', color: greenColor);
 TextStyle primaryTextStyle =
     TextStyle(fontFamily: 'Poppins', color: primaryColor);
 
