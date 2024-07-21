@@ -10,6 +10,7 @@ import 'package:rumeat_ball_apps/views/screens/home/home_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/home/home_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/otp/otp_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/otp/otp_viewmodel.dart';
+import 'package:rumeat_ball_apps/views/screens/profile/personal_data_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/profile/profile_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/splash_screen.dart';
 
@@ -31,6 +32,9 @@ void main() {
         ),
         ChangeNotifierProvider<ProfileViewModel>(
           create: (_) => ProfileViewModel(),
+        ),
+        ChangeNotifierProvider<PersonalDataViewModel>(
+          create: (_) => PersonalDataViewModel(),
         ),
       ],
       child: const MyApp(),

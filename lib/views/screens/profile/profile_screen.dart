@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:rumeat_ball_apps/views/screens/personal_data_screen.dart';
+import 'package:rumeat_ball_apps/views/screens/profile/personal_data_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/profile/profile_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 import 'package:rumeat_ball_apps/views/widgets/buttons.dart';
@@ -15,7 +15,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  @override
   @override
   void initState() {
     super.initState();
@@ -42,44 +41,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Stack(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 24),
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: greyColor,
-                      borderRadius: BorderRadius.circular(61),
-                      image: DecorationImage(
-                          image: _user?.profileImage != "" || _user?.profileImage != null
-                              ? NetworkImage(_user?.profileImage ?? "")
-                                  as ImageProvider
-                              : const AssetImage(
-                                  'assets/images/profile1.png',
-                                )),
-                    ),
-                  ),
-                  Positioned(
-                    top: 65,
-                    left: 65,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 24),
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(61),
-                        color: whiteColor,
-                      ),
-                      child: IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.camera_alt),
-                        color: primaryColor,
-                        iconSize: 20,
-                      ),
-                    ),
-                  ),
-                ],
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 24),
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: greyColor,
+                  borderRadius: BorderRadius.circular(61),
+                  image: DecorationImage(
+                      image: _user?.profileImage != "" ||
+                              _user?.profileImage != null
+                          ? NetworkImage(_user?.profileImage ?? "")
+                              as ImageProvider
+                          : const AssetImage(
+                              'assets/images/profile1.png',
+                            )),
+                ),
               ),
               Text(
                 _user?.name ?? "",

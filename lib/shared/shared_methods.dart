@@ -79,6 +79,6 @@ class APIConstant {
   // static String imageUrl = 'http://10.0.2.2:5000';
   // static String imageUrl = 'https://spp-payment.up.railway.app';
   static Map<String, String> auth(String token) => {
-        "authorization": "$token",
+        "Authorization": "Bearer $token",
       };
 }
