@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:rumeat_ball_apps/views/screens/details_menu/details_menu_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/home/category_card.dart';
 import 'package:rumeat_ball_apps/views/screens/home/food_card.dart';
 import 'package:rumeat_ball_apps/views/screens/home/home_viewmodel.dart';
@@ -211,7 +212,16 @@ class HomePage extends StatelessWidget {
                         rating: 4.9,
                         comment: 5,
                         price: item.price,
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailsMenuScreen(
+                                menuID: item.id,
+                              ),
+                            ),
+                          );
+                        },
                       );
                     },
                   )

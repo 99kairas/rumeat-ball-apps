@@ -1,13 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:provider/provider.dart';
+import 'package:rumeat_ball_apps/shared/shared_methods.dart';
+import 'package:rumeat_ball_apps/views/screens/details_menu/details_menu_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 import 'package:rumeat_ball_apps/views/widgets/buttons.dart';
 
-class DetailsMenuScreen extends StatelessWidget {
-  const DetailsMenuScreen({super.key});
+class DetailsMenuScreen extends StatefulWidget {
+  final String menuID;
+  const DetailsMenuScreen({
+    super.key,
+    required this.menuID,
+  });
+
+  @override
+  State<DetailsMenuScreen> createState() => _DetailsMenuScreenState();
+}
+
+class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<DetailsMenuViewModel>(context, listen: false)
+        .getDetailMenu(menuID: widget.menuID);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final menuProvider = Provider.of<DetailsMenuViewModel>(context);
+    final menu = menuProvider.menu;
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -15,11 +36,13 @@ class DetailsMenuScreen extends StatelessWidget {
             backgroundColor: Colors.transparent,
             expandedHeight: 250,
             flexibleSpace: FlexibleSpaceBar(
-              background: Image.asset(
-                'assets/images/burger1.png',
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+              background: menu?.image != null || menu?.image != ""
+                  ? Image.network(menu?.image ?? "")
+                  : Image.asset(
+                      'assets/images/burger1.png',
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
             ),
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: whiteColor),
@@ -51,13 +74,13 @@ class DetailsMenuScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Burger With Meat 🍔',
+                        '${menu?.name}',
                         style: blackTextStyle.copyWith(
                             fontSize: 24, fontWeight: semiBold),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Rp. 25.000',
+                        formatCurrency(menu?.price ?? 0),
                         style: primaryTextStyle.copyWith(
                           fontSize: 20,
                           fontWeight: semiBold,
@@ -103,7 +126,7 @@ class DetailsMenuScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Burger With Meat is a typical food from our restaurant that is much in demand by many people, this is very recommended for you.',
+                        '${menu?.description}',
                         style: greyTextStyle.copyWith(
                           fontSize: 14,
                           fontWeight: small,
