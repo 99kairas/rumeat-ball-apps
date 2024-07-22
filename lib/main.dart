@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rumeat_ball_apps/models/cart_model.dart';
 import 'package:rumeat_ball_apps/views/screens/auth/login_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/auth/login_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/auth/register_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/auth/register_viewmodel.dart';
+import 'package:rumeat_ball_apps/views/screens/details_menu/cart_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/details_menu_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/details_menu_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/home/home_screen.dart';
@@ -39,6 +41,9 @@ void main() {
         ChangeNotifierProvider<DetailsMenuViewModel>(
           create: (_) => DetailsMenuViewModel(),
         ),
+        ChangeNotifierProvider<CartModel>(
+          create: (_) => CartModel(),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -58,6 +63,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/home': (context) => const HomeScreen(),
         '/register': (context) => const RegisterScreen(),
+        '/cart': (context) => CartScreen(),
         '/otp': (context) {
           final email = ModalRoute.of(context)!.settings.arguments as String;
           return OTPScreen(

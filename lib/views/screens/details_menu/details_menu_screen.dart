@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:provider/provider.dart';
+import 'package:rumeat_ball_apps/models/cart_model.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/details_menu_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
@@ -18,6 +19,8 @@ class DetailsMenuScreen extends StatefulWidget {
 }
 
 class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
+  int quantity = 1; // Initial quantity
+
   @override
   void initState() {
     super.initState();
@@ -28,6 +31,7 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
   @override
   Widget build(BuildContext context) {
     final menuProvider = Provider.of<DetailsMenuViewModel>(context);
+    final cartProvider = Provider.of<CartModel>(context); // Get cart provider
     final menu = menuProvider.menu;
     return Scaffold(
       body: CustomScrollView(
@@ -200,7 +204,13 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
                       ),
                       borderRadius: BorderRadius.circular(100)),
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      setState(() {
+                        if (quantity > 1) {
+                          quantity--;
+                        }
+                      });
+                    },
                     child: Icon(
                       Icons.remove,
                       color: blackColor,
@@ -208,9 +218,10 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                const Text(
-                  '1000',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Text(
+                  '$quantity',
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(width: 8),
                 Container(
@@ -222,7 +233,11 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
                       ),
                       borderRadius: BorderRadius.circular(100)),
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      setState(() {
+                        quantity++;
+                      });
+                    },
                     child: Icon(
                       Icons.add,
                       color: blackColor,
@@ -232,11 +247,21 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
               ],
             ),
             CustomFilledButton(
-              onPressed: () {},
+              onPressed: () {
+                if (menu != null) {
+                  cartProvider.addItem(CartItem(
+                    id: menu.id ?? "",
+                    name: menu.name ?? "",
+                    price: menu.price ?? 0,
+                    image: menu.image ?? "",
+                    quantity: quantity,
+                  ));
+                  print("Adding $quantity items to cart");
+                }
+                Navigator.pushNamed(context, '/cart');
+              },
               title: "Add to Cart",
-              width: 183,
-              height: 52,
-              icon: Icons.shopping_cart,
+              width: MediaQuery.of(context).size.width * 0.4,
             ),
           ],
         ),
@@ -247,94 +272,89 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
 
 class CommentCard extends StatelessWidget {
   final String name;
+  final int rating;
   final String description;
-  final double rating;
   final String profileImage;
 
   const CommentCard({
+    super.key,
     required this.name,
-    required this.description,
     required this.rating,
+    required this.description,
     required this.profileImage,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(right: 16, bottom: 16),
-      width: MediaQuery.of(context).size.width,
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.grey,
-        ),
-        borderRadius: BorderRadius.circular(20),
+        color: whiteColor,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3), // changes position of shadow
+          ),
+        ],
       ),
-      child: Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 30,
+            backgroundImage: AssetImage(profileImage),
+          ),
+          const SizedBox(width: 16.0),
+          Expanded(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: SizedBox(
-                      width: 30,
-                      height: 30,
-                      child: Image.asset(
-                        profileImage,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                Text(
+                  name,
+                  style: blackTextStyle.copyWith(
+                    fontSize: 16,
+                    fontWeight: semiBold,
                   ),
                 ),
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 16),
-                    padding: const EdgeInsets.only(right: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RatingStars(
-                          starCount: 5,
-                          value: rating,
-                          valueLabelVisibility: false,
-                          starSize: 16,
-                          maxValueVisibility: false,
-                          starColor: primaryColor,
-                          starOffColor: greyColor,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          overflow: TextOverflow.ellipsis,
-                          name,
-                          style: blackTextStyle.copyWith(
-                            fontSize: 16,
-                            fontWeight: semiBold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          description,
-                          maxLines: 5,
-                          textAlign: TextAlign.justify,
-                          overflow: TextOverflow.ellipsis,
-                          style: blackTextStyle.copyWith(
-                            fontSize: 10,
-                            fontWeight: semiBold,
-                          ),
-                        ),
-                      ],
-                    ),
+                const SizedBox(height: 8.0),
+                RatingStars(
+                  value: rating.toDouble(),
+                  starBuilder: (index, color) => Icon(
+                    Icons.star,
+                    color: color,
+                    size: 20,
+                  ),
+                  starCount: 5,
+                  starSize: 20,
+                  maxValue: 5,
+                  starSpacing: 1,
+                  maxValueVisibility: false,
+                  valueLabelVisibility: false,
+                  animationDuration: const Duration(milliseconds: 1000),
+                  valueLabelPadding:
+                      const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
+                  valueLabelMargin: const EdgeInsets.only(right: 8),
+                  starOffColor: const Color(0xffe7e8ea),
+                  starColor: Colors.yellow,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  description,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  style: greyTextStyle.copyWith(
+                    fontSize: 14,
+                    fontWeight: small,
                   ),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
