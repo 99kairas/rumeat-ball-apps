@@ -5,6 +5,8 @@ import 'package:rumeat_ball_apps/views/screens/details_menu/cart_viewmodel.dart'
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 
 class CheckoutScreen extends StatelessWidget {
+  final String orderID;
+  CheckoutScreen({required this.orderID});
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartModel>(context);

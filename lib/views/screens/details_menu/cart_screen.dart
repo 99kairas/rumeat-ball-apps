@@ -87,7 +87,7 @@ class CartScreen extends StatelessWidget {
                 cartProvider.createOrderCart(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CheckoutScreen()),
+                  MaterialPageRoute(builder: (context) => CheckoutScreen(orderID: cartProvider.order?.id ?? "")),
                 );
               },
               style: ElevatedButton.styleFrom(
