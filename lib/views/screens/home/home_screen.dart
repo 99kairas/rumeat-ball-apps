@@ -5,6 +5,7 @@ import 'package:rumeat_ball_apps/views/screens/details_menu/details_menu_screen.
 import 'package:rumeat_ball_apps/views/screens/home/category_card.dart';
 import 'package:rumeat_ball_apps/views/screens/home/food_card.dart';
 import 'package:rumeat_ball_apps/views/screens/home/home_viewmodel.dart';
+import 'package:rumeat_ball_apps/views/screens/orders/order_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/profile/profile_screen.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 
@@ -38,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         children: [
           HomePage(),
-          OrdersPage(),
+          OrderScreen(),
           HistoryPage(),
           const ProfileScreen(),
         ],
@@ -229,18 +230,6 @@ class HomePage extends StatelessWidget {
                   const Center(child: Text('No menu available')),
               ],
             ),
-    );
-  }
-}
-
-class OrdersPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Orders'),
-      ),
-      body: const Center(child: Text("Orders Page")),
     );
   }
 }

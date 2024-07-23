@@ -70,7 +70,7 @@ class CustomFormField extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 5, top: 5),
             child: Text(
-              errorMessage ?? "",
+              errorMessage,
               style: const TextStyle(
                 color: Colors.red,
                 fontSize: 12,

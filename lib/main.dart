@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rumeat_ball_apps/models/cart_model.dart';
 import 'package:rumeat_ball_apps/views/screens/auth/login_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/auth/login_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/auth/register_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/auth/register_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/cart_screen.dart';
-import 'package:rumeat_ball_apps/views/screens/details_menu/details_menu_screen.dart';
+import 'package:rumeat_ball_apps/views/screens/details_menu/cart_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/details_menu_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/home/home_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/home/home_viewmodel.dart';

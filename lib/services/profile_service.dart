@@ -41,7 +41,6 @@ class ProfileService with ChangeNotifier {
       );
       return response.statusCode == 200;
     } catch (e) {
-      print("ini error catch $e");
       return false;
     }
   }

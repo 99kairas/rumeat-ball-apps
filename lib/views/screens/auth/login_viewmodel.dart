@@ -7,10 +7,10 @@ class LoginViewModel with ChangeNotifier {
   TextEditingController passwordController = TextEditingController();
 
   // Button Property
-  bool _isButtonEmailDisable = false;
+  final bool _isButtonEmailDisable = false;
   bool get isButtonEmailDisable => _isButtonEmailDisable;
 
-  bool _isButtonPasswordDisable = false;
+  final bool _isButtonPasswordDisable = false;
   bool get isButtonPasswordDisable => _isButtonPasswordDisable;
   // End of Button Property
 
@@ -55,7 +55,7 @@ class LoginViewModel with ChangeNotifier {
   bool _isHidePassword = true;
   bool get isHidePassword => _isHidePassword;
 
-  bool _isButtonPasswordValid = false;
+  final bool _isButtonPasswordValid = false;
   bool get isButtonPasswordValid => _isButtonPasswordValid;
 
   void validatePassword(String password) {

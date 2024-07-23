@@ -10,15 +10,11 @@ class DetailsMenuViewModel with ChangeNotifier {
   DetailMenu? get menu => _menu;
 
   void getDetailMenu({String? menuID}) async {
-    try {
-      _isLoading = true;
-      await Future.delayed(const Duration(seconds: 1));
-      final result = await DetailMenuService().getDetailMenu(menuID: menuID);
-      _menu = result.response;
-      _isLoading = false;
-      notifyListeners();
-    } catch (e) {
-      print(e);
-    }
+    _isLoading = true;
+    await Future.delayed(const Duration(seconds: 1));
+    final result = await DetailMenuService().getDetailMenu(menuID: menuID);
+    _menu = result.response;
+    _isLoading = false;
+    notifyListeners();
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rumeat_ball_apps/models/cart_model.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
+import 'package:rumeat_ball_apps/views/screens/details_menu/cart_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 
 class CheckoutScreen extends StatelessWidget {
@@ -9,6 +9,7 @@ class CheckoutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartModel>(context);
     final cartItems = cartProvider.items;
+    final tax = cartProvider.totalPrice * 0.01;
 
     return Scaffold(
       appBar: AppBar(
@@ -51,7 +52,7 @@ class CheckoutScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Total',
+                  'Price',
                   style: blackTextStyle.copyWith(
                     fontSize: 18,
                     fontWeight: semiBold,
@@ -66,12 +67,45 @@ class CheckoutScreen extends StatelessWidget {
                 ),
               ],
             ),
-            Text(
-              formatCurrency(cartProvider.totalPrice),
-              style: primaryTextStyle.copyWith(
-                fontSize: 18,
-                fontWeight: semiBold,
-              ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Tax 1%',
+                  style: blackTextStyle.copyWith(
+                    fontSize: 18,
+                    fontWeight: semiBold,
+                  ),
+                ),
+                Text(
+                  formatCurrency(cartProvider.totalPrice * 0.01),
+                  style: primaryTextStyle.copyWith(
+                    fontSize: 18,
+                    fontWeight: semiBold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Total Price',
+                  style: blackTextStyle.copyWith(
+                    fontSize: 18,
+                    fontWeight: semiBold,
+                  ),
+                ),
+                Text(
+                  formatCurrency(cartProvider.totalPrice + tax),
+                  style: primaryTextStyle.copyWith(
+                    fontSize: 18,
+                    fontWeight: semiBold,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 20),
             ElevatedButton(
@@ -105,7 +139,7 @@ class CheckoutScreen extends StatelessWidget {
                   fontWeight: semiBold,
                 ),
               ),
-              child: Center(child: Text('Place Order')),
+              child: const Center(child: Text('Place Order')),
             ),
           ],
         ),

@@ -167,7 +167,6 @@ class RegisterViewModel with ChangeNotifier {
 
     _isLoading = true;
     notifyListeners(); // Notify listeners that loading started
-    print("Loading started: $_isLoading");
 
     Dio dio = Dio();
     try {

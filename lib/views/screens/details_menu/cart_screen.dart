@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rumeat_ball_apps/models/cart_model.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
+import 'package:rumeat_ball_apps/views/screens/details_menu/cart_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/checkout_screen.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 
@@ -84,6 +84,7 @@ class CartScreen extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
+                cartProvider.createOrderCart(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => CheckoutScreen()),
