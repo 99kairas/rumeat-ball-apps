@@ -31,14 +31,14 @@ class CartScreen extends StatelessWidget {
             subtitle: Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.remove),
+                  icon: const Icon(Icons.remove),
                   onPressed: () {
                     cartProvider.decreaseQuantity(item.id);
                   },
                 ),
                 Text('${item.quantity}', style: greyTextStyle),
                 IconButton(
-                  icon: Icon(Icons.add),
+                  icon: const Icon(Icons.add),
                   onPressed: () {
                     cartProvider.increaseQuantity(item.id);
                   },
@@ -46,7 +46,7 @@ class CartScreen extends StatelessWidget {
               ],
             ),
             trailing: IconButton(
-              icon: Icon(Icons.delete),
+              icon: const Icon(Icons.delete),
               onPressed: () {
                 cartProvider.removeItem(item.id);
               },
@@ -99,7 +99,7 @@ class CartScreen extends StatelessWidget {
                   fontWeight: semiBold,
                 ),
               ),
-              child: Text('Checkout'),
+              child: const Text('Checkout'),
             ),
           ],
         ),

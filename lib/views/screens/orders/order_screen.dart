@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rumeat_ball_apps/models/get_all_order_response.dart';
-import 'package:rumeat_ball_apps/shared/shared_methods.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/checkout_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/orders/order_viewmodel.dart';
 
@@ -33,6 +32,7 @@ class OrderScreen extends StatelessWidget {
 
               return ListView(
                 children: [
+                  const SizedBox(height: 8),
                   ...viewModel.orders
                       .where((order) => order.status == "cart")
                       .map((order) {
@@ -92,7 +92,7 @@ class OrderCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text('Status: ${order.status}'),
             const SizedBox(height: 4),
-            Text('Total: ${formatCurrency(order.total ?? 0)}'),
+            Text('Total: ${order.total}'),
           ],
         ),
       ),

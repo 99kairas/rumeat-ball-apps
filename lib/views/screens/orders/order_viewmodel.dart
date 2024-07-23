@@ -18,6 +18,7 @@ class OrderViewModel extends ChangeNotifier {
     try {
       final response = await OrderService().fetchOrders();
       _orders = response.response?.orders ?? [];
+      _orders.sort((a, b) => (b.date!).compareTo((a.date!)));
       _isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -26,4 +27,8 @@ class OrderViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // DateTime parseDate(String date) {
+  //   return DateTime.parse(date); // Pastikan format tanggal sesuai dengan yang di API
+  // }
 }

@@ -12,7 +12,6 @@ class CheckoutScreen extends StatelessWidget {
     final cartProvider = Provider.of<CartModel>(context);
     final cartItems = cartProvider.items;
     final tax = cartProvider.totalPrice * 0.01;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
