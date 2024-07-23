@@ -11,13 +11,17 @@ class CartModel with ChangeNotifier {
 
   List<CartItem> get items => _items;
 
-  void addItem(CartItem item) {
+  void addItem(CartItem item, BuildContext context) {
     int index = _items.indexWhere((element) => element.id == item.id);
     if (index != -1) {
       _items[index].quantity += item.quantity;
     } else {
       _items.add(item);
     }
+    scaffoldMessengerSuccess(
+        context: context,
+        title:
+            "Berhasil menambahkan ${item.quantity} ${item.name} ke keranjang");
     notifyListeners();
   }
 

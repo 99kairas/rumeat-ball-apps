@@ -29,6 +29,15 @@ class OrderViewModel extends ChangeNotifier {
   }
 
   // DateTime parseDate(String date) {
-  //   return DateTime.parse(date); // Pastikan format tanggal sesuai dengan yang di API
+  //   final DateFormat formatter = DateFormat('d MMMM yyyy HH:mm');
+  //   return formatter.parse(date);
   // }
+
+  Order? getOrderById(String id) {
+    try {
+      return _orders.firstWhere((order) => order.id == id);
+    } catch (e) {
+      return null;
+    }
+  }
 }

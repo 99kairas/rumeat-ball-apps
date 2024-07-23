@@ -250,16 +250,18 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
             CustomFilledButton(
               onPressed: () {
                 if (menu != null) {
-                  cartProvider.addItem(CartItem(
-                    id: menu.id ?? "",
-                    name: menu.name ?? "",
-                    price: menu.price ?? 0,
-                    image: menu.image ?? "",
-                    quantity: quantity,
-                  ));
+                  cartProvider.addItem(
+                      CartItem(
+                        id: menu.id ?? "",
+                        name: menu.name ?? "",
+                        price: menu.price ?? 0,
+                        image: menu.image ?? "",
+                        quantity: quantity,
+                      ),
+                      context);
                   print("Adding $quantity items to cart");
+                  Navigator.pop(context);
                 }
-                Navigator.pushNamed(context, '/cart');
               },
               title: "Add to Cart",
               width: MediaQuery.of(context).size.width * 0.4,

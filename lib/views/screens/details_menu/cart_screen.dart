@@ -84,11 +84,14 @@ class CartScreen extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                cartProvider.createOrderCart(context);
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => CheckoutScreen(orderID: cartProvider.order?.id ?? "")),
+                  MaterialPageRoute(
+                      builder: (context) => CheckoutScreen(
+                          orderID: cartProvider.order?.id ?? "")),
                 );
+                cartProvider.createOrderCart(context);
+                cartProvider.clearCart();
               },
               style: ElevatedButton.styleFrom(
                 // primary: primaryColor,

@@ -120,7 +120,9 @@ class HomePage extends StatelessWidget {
                   ),
                   IconButton(
                     icon: Icon(Icons.shopping_cart, color: blackColor),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/cart');
+                    },
                   ),
                 ],
               ),
