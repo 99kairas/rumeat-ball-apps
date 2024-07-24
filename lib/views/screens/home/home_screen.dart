@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:rumeat_ball_apps/views/screens/details_menu/cart_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/details_menu_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/home/category_card.dart';
 import 'package:rumeat_ball_apps/views/screens/home/food_card.dart';
@@ -39,8 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         children: [
           HomePage(),
+          CartScreen(),
           OrderScreen(),
-          HistoryPage(),
           const ProfileScreen(),
         ],
       ),
@@ -52,9 +53,9 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag,
+            icon: Icon(Icons.shopping_cart,
                 color: _selectedIndex == 1 ? primaryColor : greyColor),
-            label: 'Orders',
+            label: 'Cart',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.history,
@@ -232,18 +233,6 @@ class HomePage extends StatelessWidget {
                   const Center(child: Text('No menu available')),
               ],
             ),
-    );
-  }
-}
-
-class HistoryPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('History'),
-      ),
-      body: const Center(child: Text("History Page")),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:rumeat_ball_apps/models/cart_model.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
@@ -35,160 +36,169 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
     final cartProvider = Provider.of<CartModel>(context); // Get cart provider
     final menu = menuProvider.menu;
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            backgroundColor: Colors.transparent,
-            expandedHeight: 250,
-            flexibleSpace: FlexibleSpaceBar(
-              background: menu?.image != null || menu?.image != ""
-                  ? Image.network(menu?.image ?? "")
-                  : Image.asset(
-                      'assets/images/burger1.png',
-                      width: double.infinity,
-                      fit: BoxFit.cover,
+      body: menuProvider.isLoading
+          ? Center(
+              child: LoadingAnimationWidget.fourRotatingDots(
+                color: primaryColor,
+                size: 50,
+              ),
+            )
+          : CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  backgroundColor: Colors.transparent,
+                  expandedHeight: 250,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: menu?.image != null || menu?.image != ""
+                        ? Image.network(menu?.image ?? "")
+                        : Image.asset(
+                            'assets/images/burger1.png',
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                  leading: IconButton(
+                    icon: Icon(Icons.arrow_back, color: whiteColor),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  title: Text(
+                    "About This Menu",
+                    style: whiteTextStyle.copyWith(
+                      fontSize: 16,
+                      fontWeight: semiBold,
                     ),
-            ),
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: whiteColor),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            title: Text(
-              "About This Menu",
-              style: whiteTextStyle.copyWith(
-                fontSize: 16,
-                fontWeight: semiBold,
-              ),
-            ),
-            centerTitle: true,
-            actions: [
-              IconButton(
-                icon: Icon(Icons.favorite_border, color: whiteColor),
-                onPressed: () {},
-              ),
-            ],
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${menu?.name}',
-                        style: blackTextStyle.copyWith(
-                            fontSize: 24, fontWeight: semiBold),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        formatCurrency(menu?.price ?? 0),
-                        style: primaryTextStyle.copyWith(
-                          fontSize: 20,
-                          fontWeight: semiBold,
-                          color: primaryColor,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Chip(
-                            avatar:
-                                Icon(Icons.shopping_bag, color: primaryColor),
-                            label: Text(
-                              'Take Away',
-                              style: greyTextStyle.copyWith(),
+                  ),
+                  centerTitle: true,
+                  actions: [
+                    IconButton(
+                      icon: Icon(Icons.favorite_border, color: whiteColor),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${menu?.name}',
+                              style: blackTextStyle.copyWith(
+                                  fontSize: 24, fontWeight: semiBold),
                             ),
-                          ),
-                          const SizedBox(width: 8),
-                          Chip(
-                            avatar: Icon(Icons.comment, color: primaryColor),
-                            label: Text(
-                              '5',
-                              style: greyTextStyle.copyWith(),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Chip(
-                            avatar: Icon(Icons.star, color: primaryColor),
-                            label: Text(
-                              '4.5',
-                              style: greyTextStyle.copyWith(),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Description',
-                        style: blackTextStyle.copyWith(
-                          fontSize: 18,
-                          fontWeight: semiBold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        '${menu?.description}',
-                        style: greyTextStyle.copyWith(
-                          fontSize: 14,
-                          fontWeight: small,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Comments',
-                            style: blackTextStyle.copyWith(
-                              fontSize: 16,
-                              fontWeight: semiBold,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () => {},
-                            child: Text(
-                              'See All',
+                            const SizedBox(height: 8),
+                            Text(
+                              formatCurrency(menu?.price ?? 0),
                               style: primaryTextStyle.copyWith(
-                                fontSize: 16,
+                                fontSize: 20,
+                                fontWeight: semiBold,
+                                color: primaryColor,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Row(
+                              children: [
+                                Chip(
+                                  avatar: Icon(Icons.shopping_bag,
+                                      color: primaryColor),
+                                  label: Text(
+                                    'Take Away',
+                                    style: greyTextStyle.copyWith(),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Chip(
+                                  avatar:
+                                      Icon(Icons.comment, color: primaryColor),
+                                  label: Text(
+                                    '5',
+                                    style: greyTextStyle.copyWith(),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Chip(
+                                  avatar: Icon(Icons.star, color: primaryColor),
+                                  label: Text(
+                                    '4.5',
+                                    style: greyTextStyle.copyWith(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'Description',
+                              style: blackTextStyle.copyWith(
+                                fontSize: 18,
                                 fontWeight: semiBold,
                               ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 8),
+                            Text(
+                              '${menu?.description}',
+                              style: greyTextStyle.copyWith(
+                                fontSize: 14,
+                                fontWeight: small,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Comments',
+                                  style: blackTextStyle.copyWith(
+                                    fontSize: 16,
+                                    fontWeight: semiBold,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () => {},
+                                  child: Text(
+                                    'See All',
+                                    style: primaryTextStyle.copyWith(
+                                      fontSize: 16,
+                                      fontWeight: semiBold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            const Column(
+                              children: [
+                                CommentCard(
+                                  name:
+                                      "RizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizki",
+                                  rating: 5,
+                                  description:
+                                      'Desain antarmuka pengguna (UI design) adalah bagian penting dari pengembangan produk digital yang efektif. UI design melibatkan merancang antarmuka pengguna yang mudah digunakan dan menarik, serta memperhatikan aspek-aspek seperti navigasi, tata letak, interaksi, dan estetika visual. Kursus ini akan memberikan pengantar tentang UI design dan membahas prinsip-prinsip desain antarmuka pengguna yang baik.',
+                                  profileImage: 'assets/images/burger1.png',
+                                ),
+                                CommentCard(
+                                  name: "Rizki",
+                                  rating: 2,
+                                  description: 'Pizza',
+                                  profileImage: 'assets/images/burger1.png',
+                                ),
+                                // Add more CommentCard widgets as needed
+                              ],
+                            ),
+                            const SizedBox(
+                                height: 80), // To ensure button is visible
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 16),
-                      const Column(
-                        children: [
-                          CommentCard(
-                            name:
-                                "RizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizki",
-                            rating: 5,
-                            description:
-                                'Desain antarmuka pengguna (UI design) adalah bagian penting dari pengembangan produk digital yang efektif. UI design melibatkan merancang antarmuka pengguna yang mudah digunakan dan menarik, serta memperhatikan aspek-aspek seperti navigasi, tata letak, interaksi, dan estetika visual. Kursus ini akan memberikan pengantar tentang UI design dan membahas prinsip-prinsip desain antarmuka pengguna yang baik.',
-                            profileImage: 'assets/images/burger1.png',
-                          ),
-                          CommentCard(
-                            name: "Rizki",
-                            rating: 2,
-                            description: 'Pizza',
-                            profileImage: 'assets/images/burger1.png',
-                          ),
-                          // Add more CommentCard widgets as needed
-                        ],
-                      ),
-                      const SizedBox(height: 80), // To ensure button is visible
                     ],
                   ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(

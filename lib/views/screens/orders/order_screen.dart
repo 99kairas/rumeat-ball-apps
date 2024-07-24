@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rumeat_ball_apps/models/get_all_order_response.dart';
+import 'package:rumeat_ball_apps/shared/shared_methods.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/checkout_screen.dart';
+import 'package:rumeat_ball_apps/views/screens/orders/details_order_history_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/orders/order_viewmodel.dart';
+import 'package:rumeat_ball_apps/views/themes/style.dart';
 
 class OrderScreen extends StatelessWidget {
   @override
@@ -12,7 +15,13 @@ class OrderScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('Orders'),
+          title: Text(
+            'Order History',
+            style: blackTextStyle.copyWith(
+              fontSize: 18,
+              fontWeight: semiBold,
+            ),
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -27,14 +36,49 @@ class OrderScreen extends StatelessWidget {
               }
 
               if (viewModel.orders.isEmpty) {
-                return const Center(child: Text('No orders available.'));
+                return Center(
+                  child: SizedBox(
+                    width: 327,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "assets/images/img_smiling.png",
+                          height: 100,
+                          width: 100,
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        Text(
+                          "No Orders",
+                          style: primaryTextStyle.copyWith(
+                            fontSize: 20,
+                            fontWeight: bold,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        Text(
+                          textAlign: TextAlign.center,
+                          "Looks like you haven't ordered anything yet",
+                          style: greyTextStyle.copyWith(
+                            fontSize: 16,
+                            fontWeight: regular,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
               }
 
               return ListView(
                 children: [
                   const SizedBox(height: 8),
                   ...viewModel.orders
-                      .where((order) => order.status == "cart")
+                      .where((order) => order.status != "cart")
                       .map((order) {
                     return OrderCard(order: order);
                   }).toList(),
@@ -61,7 +105,7 @@ class OrderCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CheckoutScreen(orderID: order.id ?? ""),
+            builder: (context) => DetailsOrderHistoryScreen(orderId: order.id ?? ""),
           ),
         );
       },
@@ -92,7 +136,7 @@ class OrderCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text('Status: ${order.status}'),
             const SizedBox(height: 4),
-            Text('Total: ${order.total}'),
+            Text(formatCurrency(order.total ?? 0)),
           ],
         ),
       ),

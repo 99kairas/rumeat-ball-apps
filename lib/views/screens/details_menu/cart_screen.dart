@@ -12,101 +12,140 @@ class CartScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           'Your Cart',
-          style: whiteTextStyle.copyWith(
+          style: blackTextStyle.copyWith(
             fontSize: 18,
             fontWeight: semiBold,
           ),
         ),
-        backgroundColor: primaryColor,
       ),
-      body: ListView.builder(
-        itemCount: cartProvider.items.length,
-        itemBuilder: (context, index) {
-          final item = cartProvider.items[index];
-          return ListTile(
-            leading: Image.network(item.image),
-            title: Text(item.name, style: blackTextStyle),
-            subtitle: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.remove),
-                  onPressed: () {
-                    cartProvider.decreaseQuantity(item.id);
-                  },
-                ),
-                Text('${item.quantity}', style: greyTextStyle),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () {
-                    cartProvider.increaseQuantity(item.id);
-                  },
-                ),
-              ],
-            ),
-            trailing: IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                cartProvider.removeItem(item.id);
-              },
-            ),
-          );
-        },
-      ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: whiteColor,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Total',
-                    style: blackTextStyle.copyWith(
-                        fontSize: 18, fontWeight: semiBold)),
-                Text(formatCurrency(cartProvider.totalPrice),
-                    style: primaryTextStyle.copyWith(
-                        fontSize: 18, fontWeight: semiBold)),
-              ],
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CheckoutScreen(
-                          orderID: cartProvider.order?.id ?? "")),
+      body: cartProvider.items.isNotEmpty
+          ? ListView.builder(
+              itemCount: cartProvider.items.length,
+              itemBuilder: (context, index) {
+                final item = cartProvider.items[index];
+                return ListTile(
+                  leading: Image.network(item.image),
+                  title: Text(item.name, style: blackTextStyle),
+                  subtitle: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.remove),
+                        onPressed: () {
+                          cartProvider.decreaseQuantity(item.id);
+                        },
+                      ),
+                      Text('${item.quantity}', style: greyTextStyle),
+                      IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: () {
+                          cartProvider.increaseQuantity(item.id);
+                        },
+                      ),
+                    ],
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      cartProvider.removeItem(item.id);
+                    },
+                  ),
                 );
-                cartProvider.createOrderCart(context);
-                cartProvider.clearCart();
               },
-              style: ElevatedButton.styleFrom(
-                // primary: primaryColor,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                textStyle: whiteTextStyle.copyWith(
-                  fontSize: 16,
-                  fontWeight: semiBold,
+            )
+          : Center(
+              child: SizedBox(
+                width: 327,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/images/img_smiling.png",
+                      height: 100,
+                      width: 100,
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Text(
+                      "No Items in Cart",
+                      style: primaryTextStyle.copyWith(
+                        fontSize: 20,
+                        fontWeight: bold,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Text(
+                      textAlign: TextAlign.center,
+                      "You don't have any item in your cart, Let's add some!",
+                      style: greyTextStyle.copyWith(
+                        fontSize: 16,
+                        fontWeight: regular,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: const Text('Checkout'),
             ),
-          ],
-        ),
-      ),
+      bottomNavigationBar: cartProvider.items.isNotEmpty
+          ? Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: whiteColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Total',
+                          style: blackTextStyle.copyWith(
+                              fontSize: 18, fontWeight: semiBold)),
+                      Text(formatCurrency(cartProvider.totalPrice),
+                          style: primaryTextStyle.copyWith(
+                              fontSize: 18, fontWeight: semiBold)),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CheckoutScreen(
+                                orderID: cartProvider.order?.id ?? "")),
+                      );
+                      cartProvider.createOrderCart(context);
+                      cartProvider.clearCart();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      // primary: primaryColor,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 15),
+                      textStyle: whiteTextStyle.copyWith(
+                        fontSize: 16,
+                        fontWeight: semiBold,
+                      ),
+                    ),
+                    child: const Text('Checkout'),
+                  ),
+                ],
+              ),
+            )
+          : null,
     );
   }
 }
