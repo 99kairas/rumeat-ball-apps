@@ -18,7 +18,7 @@ class OrderViewModel extends ChangeNotifier {
     try {
       final response = await OrderService().fetchOrders();
       _orders = response.response?.orders ?? [];
-      _orders.sort((a, b) => (b.date!).compareTo((a.date!)));
+      _orders.sort((a, b) => (b.date ?? '').compareTo(a.date ?? ''));
       _isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -28,14 +28,11 @@ class OrderViewModel extends ChangeNotifier {
     }
   }
 
-  // DateTime parseDate(String date) {
-  //   final DateFormat formatter = DateFormat('d MMMM yyyy HH:mm');
-  //   return formatter.parse(date);
-  // }
-
   Order? getOrderById(String id) {
     try {
-      return _orders.firstWhere((order) => order.id == id);
+      return _orders.where((order) => order.id == id).isNotEmpty
+          ? _orders.firstWhere((order) => order.id == id)
+          : null;
     } catch (e) {
       return null;
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:rumeat_ball_apps/models/get_all_order_response.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
@@ -28,7 +29,12 @@ class OrderScreen extends StatelessWidget {
           child: Consumer<OrderViewModel>(
             builder: (context, viewModel, child) {
               if (viewModel.isLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                  child: LoadingAnimationWidget.fourRotatingDots(
+                    color: primaryColor,
+                    size: 50,
+                  ),
+                );
               }
 
               if (viewModel.errorMessage.isNotEmpty) {
@@ -105,7 +111,8 @@ class OrderCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetailsOrderHistoryScreen(orderId: order.id ?? ""),
+            builder: (context) =>
+                DetailsOrderHistoryScreen(orderId: order.id ?? ""),
           ),
         );
       },
