@@ -3,7 +3,6 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:rumeat_ball_apps/models/get_all_order_response.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
-import 'package:rumeat_ball_apps/views/screens/details_menu/checkout_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/orders/details_order_history_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/orders/order_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
@@ -108,6 +107,8 @@ class OrderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        // order.status != "cart"
+        // ?
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -115,6 +116,15 @@ class OrderCard extends StatelessWidget {
                 DetailsOrderHistoryScreen(orderId: order.id ?? ""),
           ),
         );
+        //     :
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => CheckoutScreen(
+        //       orderID: order.id ?? "",
+        //     ),
+        //   ),
+        // );
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0),

@@ -4,7 +4,6 @@ import 'package:rumeat_ball_apps/models/cart_model.dart';
 import 'package:rumeat_ball_apps/models/get_order_by_id_response.dart';
 import 'package:rumeat_ball_apps/services/detail_menu_service.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
-import 'package:rumeat_ball_apps/views/screens/details_menu/details_menu_viewmodel.dart';
 
 class CartModel with ChangeNotifier {
   final List<CartItem> _items = [];

@@ -37,6 +37,7 @@ class DetailMenuService {
       final response = await dio.get(
         '${APIConstant.baseUrl}/users/order/$orderID',
       );
+      print("ini adalah detail menu service : $orderID");
       return GetOrderByIdResponse.fromJson(response.data);
     } on DioException catch (e) {
       return GetOrderByIdResponse.fromJson(e.response?.data);

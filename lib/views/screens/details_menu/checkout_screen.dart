@@ -2,19 +2,45 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/cart_viewmodel.dart';
+import 'package:rumeat_ball_apps/views/screens/details_menu/checkout_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class CheckoutScreen extends StatelessWidget {
+class CheckoutScreen extends StatefulWidget {
   final String orderID;
   CheckoutScreen({required this.orderID});
+
+  @override
+  State<CheckoutScreen> createState() => _CheckoutScreenState();
+}
+
+class _CheckoutScreenState extends State<CheckoutScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<CartModel>(context, listen: false)
+        .getOrderByID(orderID: widget.orderID);
+    _fetchOrderDetails();
+  }
+
+  void _fetchOrderDetails() {
+    // Cetak orderID untuk memastikan nilainya
+    print("Fetching order details for order ID: ${widget.orderID}");
+    // Misalnya, panggil method di ViewModel untuk mengambil data order
+    CheckoutViewModel().getOrderByID(orderID: widget.orderID);
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("ini di context ${widget.orderID}"); 
     final cartProvider = Provider.of<CartModel>(context);
+    final checkoutViewModel = Provider.of<CheckoutViewModel>(context);
     final cartItems = cartProvider.items;
     final tax = cartProvider.totalPrice * 0.01;
-
+    final totalWithTax = cartProvider.totalPrice + tax;
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           'Checkout',
           style: whiteTextStyle.copyWith(
@@ -101,7 +127,7 @@ class CheckoutScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  formatCurrency(cartProvider.totalPrice + tax),
+                  formatCurrency(totalWithTax),
                   style: primaryTextStyle.copyWith(
                     fontSize: 18,
                     fontWeight: semiBold,
@@ -109,43 +135,76 @@ class CheckoutScreen extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Implement checkout functionality here
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Order Placed'),
-                      content: Text('Your order has been placed successfully!'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: Text('OK'),
-                          onPressed: () {
-                            cartProvider.clearCart();
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    print("ini oder id : ${cartProvider.order?.id}");
+                    print("ini TAX id : ${totalWithTax}");
+                    await checkoutViewModel.placeOrder(
+                        cartProvider.order?.id ?? "", totalWithTax);
+                    if (checkoutViewModel.order != null) {
+                      _launchURL(checkoutViewModel.orderModel!.paymentUrl);
+                    } else {
+                      print("Error placing order: ${checkoutViewModel.error}");
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                    textStyle: whiteTextStyle.copyWith(
+                      fontSize: 16,
+                      fontWeight: semiBold,
+                    ),
+                  ),
+                  child: const Center(child: Text('Place Order')),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Order Placed'),
+                          content:
+                              Text('Your order has been placed successfully!'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: Text('OK'),
+                              onPressed: () {
+                                cartProvider.clearCart();
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
                     );
                   },
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                // primary: primaryColor,
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                textStyle: whiteTextStyle.copyWith(
-                  fontSize: 16,
-                  fontWeight: semiBold,
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                    textStyle: whiteTextStyle.copyWith(
+                      fontSize: 16,
+                      fontWeight: semiBold,
+                    ),
+                  ),
+                  child: const Center(child: Text('Cancel')),
                 ),
-              ),
-              child: const Center(child: Text('Place Order')),
+              ],
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

@@ -129,7 +129,6 @@ class CartScreen extends StatelessWidget {
                                 orderID: cartProvider.order?.id ?? "")),
                       );
                       cartProvider.createOrderCart(context);
-                      cartProvider.clearCart();
                     },
                     style: ElevatedButton.styleFrom(
                       // primary: primaryColor,

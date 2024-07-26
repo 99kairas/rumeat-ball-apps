@@ -14,7 +14,6 @@ class OrderService {
           headers: APIConstant.auth('$token'),
         ),
       );
-      print("ini adalah order service : ${response.data}");
       return GetAllOrderResponse.fromJson(response.data);
     } on DioException catch (e) {
       return GetAllOrderResponse.fromJson(e.response?.data);
