@@ -20,7 +20,7 @@ class _DetailsOrderHistoryScreenState extends State<DetailsOrderHistoryScreen> {
     super.initState();
     Future.delayed(Duration.zero, () {
       Provider.of<DetailsOrderHistoryViewModel>(context, listen: false)
-          .fetchOrderDetails(widget.orderId);
+          .getDetailsOrderHistory(context, orderID: widget.orderId);
     });
   }
 
@@ -41,42 +41,42 @@ class _DetailsOrderHistoryScreenState extends State<DetailsOrderHistoryScreen> {
         backgroundColor: primaryColor,
       ),
       body: orderDetailsViewModel.isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                      'Order ID: ${orderDetailsViewModel.orderDetails?.id ?? ''}',
+                      'Order ID: ${orderDetailsViewModel.orderHistoryItems?.id ?? ''}',
                       style: blackTextStyle),
                   Text(
-                      'Date: ${orderDetailsViewModel.orderDetails?.date ?? ''}',
+                      'Date: ${orderDetailsViewModel.orderHistoryItems?.date ?? ''}',
                       style: blackTextStyle),
                   Text(
-                      'Status: ${orderDetailsViewModel.orderDetails?.status ?? ''}',
+                      'Status: ${orderDetailsViewModel.orderHistoryItems?.status ?? ''}',
                       style: blackTextStyle),
                   Text(
-                      'Total: ${orderDetailsViewModel.orderDetails?.total ?? ''}',
+                      'Total: ${formatCurrency(orderDetailsViewModel.orderHistoryItems?.total ?? 0)}',
                       style: blackTextStyle),
                   const SizedBox(height: 20),
                   Expanded(
                     child: ListView.builder(
-                      itemCount:
-                          orderDetailsViewModel.orderDetails?.items?.length ?? 0,
+                      itemCount: orderDetailsViewModel
+                              .orderHistoryItems?.items?.length ??
+                          0,
                       itemBuilder: (context, index) {
-                        final item =
-                            orderDetailsViewModel.orderDetails!.items![index];
-                            return Container();
-                        // return ListTile(
-                        //   // leading: Image.network(item.image),
-                        //   title: Text(item.name, style: blackTextStyle),
-                        //   subtitle: Text('Quantity: ${item.quantity}',
-                        //       style: greyTextStyle),
-                        //   trailing: Text(
-                        //       formatCurrency(item.price * item.quantity),
-                        //       style: primaryTextStyle),
-                        // );
+                        final item = orderDetailsViewModel
+                            .orderHistoryItems!.items![index];
+                        return ListTile(
+                          title: Text(item.menuId ?? '', style: blackTextStyle),
+                          subtitle: Text('Quantity: ${item.quantity}',
+                              style: greyTextStyle),
+                          trailing: Text(
+                              formatCurrency(
+                                  item.pricePerItem ?? 0 * item.quantity),
+                              style: primaryTextStyle),
+                        );
                       },
                     ),
                   ),

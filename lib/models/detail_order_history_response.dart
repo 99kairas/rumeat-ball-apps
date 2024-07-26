@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final getDetailsOrderHistoryResponse = getDetailsOrderHistoryResponseFromJson(jsonString);
-
 import 'dart:convert';
 
 GetDetailsOrderHistoryResponse getDetailsOrderHistoryResponseFromJson(String str) => GetDetailsOrderHistoryResponse.fromJson(json.decode(str));
@@ -10,7 +6,7 @@ String getDetailsOrderHistoryResponseToJson(GetDetailsOrderHistoryResponse data)
 
 class GetDetailsOrderHistoryResponse {
     String? message;
-    OrderDetails? response;
+    DetailsOrderHistory? response;
 
     GetDetailsOrderHistoryResponse({
         this.message,
@@ -19,7 +15,7 @@ class GetDetailsOrderHistoryResponse {
 
     factory GetDetailsOrderHistoryResponse.fromJson(Map<String, dynamic> json) => GetDetailsOrderHistoryResponse(
         message: json["message"],
-        response: json["response"] == null ? null : OrderDetails.fromJson(json["response"]),
+        response: json["response"] == null ? null : DetailsOrderHistory.fromJson(json["response"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -28,15 +24,15 @@ class GetDetailsOrderHistoryResponse {
     };
 }
 
-class OrderDetails {
+class DetailsOrderHistory {
     String? id;
     String? userId;
     String? status;
     String? date;
     int? total;
-    List<OrderItem>? items;
+    List<DetailsOrderHistoryItems>? items;
 
-    OrderDetails({
+    DetailsOrderHistory({
         this.id,
         this.userId,
         this.status,
@@ -45,13 +41,13 @@ class OrderDetails {
         this.items,
     });
 
-    factory OrderDetails.fromJson(Map<String, dynamic> json) => OrderDetails(
+    factory DetailsOrderHistory.fromJson(Map<String, dynamic> json) => DetailsOrderHistory(
         id: json["id"],
         userId: json["user_id"],
         status: json["status"],
         date: json["date"],
         total: json["total"],
-        items: json["items"] == null ? [] : List<OrderItem>.from(json["items"]!.map((x) => OrderItem.fromJson(x))),
+        items: json["items"] == null ? [] : List<DetailsOrderHistoryItems>.from(json["items"].map((x) => DetailsOrderHistoryItems.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
@@ -64,22 +60,22 @@ class OrderDetails {
     };
 }
 
-class OrderItem {
+class DetailsOrderHistoryItems {
     String? menuId;
     String? userId;
-    int? quantity;
+    int quantity;
     int? pricePerItem;
     int? totalPrice;
 
-    OrderItem({
+    DetailsOrderHistoryItems({
         this.menuId,
         this.userId,
-        this.quantity,
+        required this.quantity,
         this.pricePerItem,
         this.totalPrice,
     });
 
-    factory OrderItem.fromJson(Map<String, dynamic> json) => OrderItem(
+    factory DetailsOrderHistoryItems.fromJson(Map<String, dynamic> json) => DetailsOrderHistoryItems(
         menuId: json["menu_id"],
         userId: json["user_id"],
         quantity: json["quantity"],
