@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/cart_viewmodel.dart';
@@ -18,9 +19,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<CartModel>(context, listen: false)
-        .getOrderByID(orderID: widget.orderID);
-    _fetchOrderDetails();
+    Future.delayed(Duration.zero, () {
+      Provider.of<CartModel>(context, listen: false)
+          .getOrderByID(orderID: widget.orderID);
+      _fetchOrderDetails();
+    });
   }
 
   void _fetchOrderDetails() {
@@ -32,7 +35,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("ini di context ${widget.orderID}"); 
+    print("ini di context ${widget.orderID}");
     final cartProvider = Provider.of<CartModel>(context);
     final checkoutViewModel = Provider.of<CheckoutViewModel>(context);
     final cartItems = cartProvider.items;
@@ -50,153 +53,164 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ),
         backgroundColor: primaryColor,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: cartItems.length,
-                itemBuilder: (context, index) {
-                  final item = cartItems[index];
-                  return ListTile(
-                    leading: Image.network(item.image),
-                    title: Text(item.name, style: blackTextStyle),
-                    subtitle: Text(
-                      'Quantity: ${item.quantity}',
-                      style: greyTextStyle,
-                    ),
-                    trailing: Text(
-                      formatCurrency(item.price * item.quantity),
-                      style: primaryTextStyle,
-                    ),
-                  );
-                },
+      body: cartProvider.isLoading
+          ? Center(
+              child: LoadingAnimationWidget.fourRotatingDots(
+                color: primaryColor,
+                size: 50,
               ),
-            ),
-            Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Price',
-                  style: blackTextStyle.copyWith(
-                    fontSize: 18,
-                    fontWeight: semiBold,
-                  ),
-                ),
-                Text(
-                  formatCurrency(cartProvider.totalPrice),
-                  style: primaryTextStyle.copyWith(
-                    fontSize: 18,
-                    fontWeight: semiBold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Tax 1%',
-                  style: blackTextStyle.copyWith(
-                    fontSize: 18,
-                    fontWeight: semiBold,
-                  ),
-                ),
-                Text(
-                  formatCurrency(cartProvider.totalPrice * 0.01),
-                  style: primaryTextStyle.copyWith(
-                    fontSize: 18,
-                    fontWeight: semiBold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Total Price',
-                  style: blackTextStyle.copyWith(
-                    fontSize: 18,
-                    fontWeight: semiBold,
-                  ),
-                ),
-                Text(
-                  formatCurrency(totalWithTax),
-                  style: primaryTextStyle.copyWith(
-                    fontSize: 18,
-                    fontWeight: semiBold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    print("ini oder id : ${cartProvider.order?.id}");
-                    print("ini TAX id : ${totalWithTax}");
-                    await checkoutViewModel.placeOrder(
-                        cartProvider.order?.id ?? "", totalWithTax);
-                    if (checkoutViewModel.order != null) {
-                      _launchURL(checkoutViewModel.orderModel!.paymentUrl);
-                    } else {
-                      print("Error placing order: ${checkoutViewModel.error}");
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                    textStyle: whiteTextStyle.copyWith(
-                      fontSize: 16,
-                      fontWeight: semiBold,
-                    ),
-                  ),
-                  child: const Center(child: Text('Place Order')),
-                ),
-                const SizedBox(width: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Order Placed'),
-                          content:
-                              Text('Your order has been placed successfully!'),
-                          actions: <Widget>[
-                            TextButton(
-                              child: Text('OK'),
-                              onPressed: () {
-                                cartProvider.clearCart();
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
+            )
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: cartItems.length,
+                      itemBuilder: (context, index) {
+                        final item = cartItems[index];
+                        return ListTile(
+                          leading: Image.network(item.image),
+                          title: Text(item.name, style: blackTextStyle),
+                          subtitle: Text(
+                            'Quantity: ${item.quantity}',
+                            style: greyTextStyle,
+                          ),
+                          trailing: Text(
+                            formatCurrency(item.price * item.quantity),
+                            style: primaryTextStyle,
+                          ),
                         );
                       },
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                    textStyle: whiteTextStyle.copyWith(
-                      fontSize: 16,
-                      fontWeight: semiBold,
                     ),
                   ),
-                  child: const Center(child: Text('Cancel')),
-                ),
-              ],
+                  Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Price',
+                        style: blackTextStyle.copyWith(
+                          fontSize: 18,
+                          fontWeight: semiBold,
+                        ),
+                      ),
+                      Text(
+                        formatCurrency(cartProvider.totalPrice),
+                        style: primaryTextStyle.copyWith(
+                          fontSize: 18,
+                          fontWeight: semiBold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Tax 1%',
+                        style: blackTextStyle.copyWith(
+                          fontSize: 18,
+                          fontWeight: semiBold,
+                        ),
+                      ),
+                      Text(
+                        formatCurrency(cartProvider.totalPrice * 0.01),
+                        style: primaryTextStyle.copyWith(
+                          fontSize: 18,
+                          fontWeight: semiBold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Total Price',
+                        style: blackTextStyle.copyWith(
+                          fontSize: 18,
+                          fontWeight: semiBold,
+                        ),
+                      ),
+                      Text(
+                        formatCurrency(totalWithTax),
+                        style: primaryTextStyle.copyWith(
+                          fontSize: 18,
+                          fontWeight: semiBold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          print("ini oder id : ${cartProvider.order?.id}");
+                          print("ini TAX id : ${totalWithTax}");
+                          await checkoutViewModel.placeOrder(
+                              cartProvider.order?.id ?? "", totalWithTax);
+                          if (checkoutViewModel.order != null) {
+                            _launchURL(
+                                checkoutViewModel.orderModel!.paymentUrl);
+                          } else {
+                            print(
+                                "Error placing order: ${checkoutViewModel.error}");
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 50, vertical: 15),
+                          textStyle: whiteTextStyle.copyWith(
+                            fontSize: 16,
+                            fontWeight: semiBold,
+                          ),
+                        ),
+                        child: const Center(child: Text('Place Order')),
+                      ),
+                      const SizedBox(width: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Order Placed'),
+                                content: Text(
+                                    'Your order has been placed successfully!'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('OK'),
+                                    onPressed: () {
+                                      cartProvider.clearCart();
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 50, vertical: 15),
+                          textStyle: whiteTextStyle.copyWith(
+                            fontSize: 16,
+                            fontWeight: semiBold,
+                          ),
+                        ),
+                        child: const Center(child: Text('Cancel')),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
     );
   }
 

@@ -121,17 +121,26 @@ class CartScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CheckoutScreen(
-                                orderID: cartProvider.order?.id ?? "")),
-                      );
-                      cartProvider.createOrderCart(context);
+                    onPressed: () async {
+                      final orderID =
+                          await cartProvider.createOrderCart(context);
+                      print("ini adalah cart screen : ${orderID}");
+                      if (orderID != null && orderID.isNotEmpty) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CheckoutScreen(orderID: orderID),
+                          ),
+                        );
+                      } else {
+                        scaffoldMessengerFailed(
+                          context: context,
+                          title: "Failed to create order",
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
-                      // primary: primaryColor,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 50, vertical: 15),
                       textStyle: whiteTextStyle.copyWith(

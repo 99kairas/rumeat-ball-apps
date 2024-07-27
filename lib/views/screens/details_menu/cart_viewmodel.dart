@@ -66,7 +66,7 @@ class CartModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createOrderCart(BuildContext context) async {
+  Future<String?> createOrderCart(BuildContext context) async {
     final List<Map<String, dynamic>> orderItems = _items.map((item) {
       return {
         'menu_id': item.id,
@@ -75,15 +75,24 @@ class CartModel with ChangeNotifier {
     }).toList();
 
     try {
-      final response = await DetailMenuService()
-          .createOrder(orderItems); // Panggil service dengan token
+      final response = await DetailMenuService().createOrder(orderItems);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        scaffoldMessengerSuccess(
-          context: context,
-          title: response.data['message'],
-        );
-        await Future.delayed(const Duration(seconds: 1));
+        final String? orderID = response.data['response']['id'];
+
+        if (orderID != null) {
+          scaffoldMessengerSuccess(
+            context: context,
+            title: "Order created successfully",
+          );
+          notifyListeners();
+          return orderID;
+        } else {
+          scaffoldMessengerFailed(
+            context: context,
+            title: "Order ID not found in the response",
+          );
+        }
       } else {
         scaffoldMessengerFailed(
             context: context, title: response.data['response']);
@@ -93,7 +102,7 @@ class CartModel with ChangeNotifier {
           context: context, title: '${e.response?.data['response']}');
     }
 
-    notifyListeners(); // Notify listeners that loading finished
+    return null; // Return null if something goes wrong
   }
 
   bool _isLoading = false;
