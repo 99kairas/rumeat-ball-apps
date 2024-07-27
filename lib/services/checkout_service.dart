@@ -17,22 +17,35 @@ class CheckoutService {
     }
   }
 
-  Future<TransactionModel> createTransaction(String orderId, double totalAmount) async {
+  Future<TransactionModel> createTransaction(
+      String orderId, double totalAmount) async {
+    final token = await SharedPref.getToken();
+    print(
+        "Creating transaction for order ID: $orderId with amount: $totalAmount");
+
     try {
-      final response = await dio.get(
+      final response = await dio.post(
         '${APIConstant.baseUrl}/users/transaction',
         data: {
           "order_id": orderId,
           "total_amount": totalAmount,
-        }
+        },
+        options: Options(
+          headers: APIConstant.auth('$token'),
+        ),
       );
 
-      if (response.statusCode == 200) {
+      print("Response status: ${response.statusCode}");
+      print("Response data: ${response.data}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return TransactionModel.fromJson(response.data['response']);
       } else {
+        print("Unexpected status code: ${response.statusCode}");
         throw Exception('Failed to create order');
       }
     } on DioException catch (e) {
+      print("DioException: ${e.response?.data}");
       throw Exception('Network error: ${e.message}');
     }
   }

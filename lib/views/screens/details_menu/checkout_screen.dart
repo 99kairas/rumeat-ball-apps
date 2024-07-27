@@ -151,16 +151,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       ElevatedButton(
                         onPressed: () async {
-                          print("ini oder id : ${cartProvider.order?.id}");
+                          print("ini order id di checkout : ${widget.orderID}");
                           print("ini TAX id : ${totalWithTax}");
                           await checkoutViewModel.placeOrder(
-                              cartProvider.order?.id ?? "", totalWithTax);
-                          if (checkoutViewModel.order != null) {
-                            _launchURL(
-                                checkoutViewModel.orderModel!.paymentUrl);
+                              widget.orderID, totalWithTax);
+                          if (checkoutViewModel.orderModel != null) {
+                            print(
+                                "Payment URL: ${checkoutViewModel.orderModel!.paymentUrl}");
+                            _launchInBrowser(Uri.parse(
+                                checkoutViewModel.orderModel!.paymentUrl));
                           } else {
                             print(
                                 "Error placing order: ${checkoutViewModel.error}");
+                            scaffoldMessengerFailed(
+                              context: context,
+                              title: "Error placing order",
+                            );
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -214,11 +220,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     );
   }
 
-  void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
+  Future<void> _launchInBrowser(Uri url) async {
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw Exception('Could not launch $url');
     }
   }
 }
