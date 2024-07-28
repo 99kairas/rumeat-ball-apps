@@ -27,6 +27,4 @@ class HomeService {
       return GetAllCategoriesResponse.fromJson(e.response?.data);
     }
   }
-
-
 }

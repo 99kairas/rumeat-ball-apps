@@ -90,6 +90,8 @@ class _DetailsOrderHistoryScreenState extends State<DetailsOrderHistoryScreen> {
                                   price: 0,
                                   status: '',
                                   categoryId: '',
+                                  averageRating: 0,
+                                  commentCount: 0,
                                 ));
 
                         return ListTile(

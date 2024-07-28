@@ -23,7 +23,6 @@ class HomeViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-
   void getAllCategories() async {
     _isLoading = true;
     await Future.delayed(const Duration(seconds: 1));
