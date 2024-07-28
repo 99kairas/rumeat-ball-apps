@@ -96,29 +96,16 @@ class HomePage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Halo,',
-                    style: TextStyle(color: greyColor, fontSize: 14),
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '${menuProvider.menu?.first.name}',
-                        style: TextStyle(color: blackColor, fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ],
+              SizedBox(
+                height: 150,
+                width: 150,
+                child: Image.asset(
+                  "assets/images/rumeat-ball.png",
+                  color: primaryColor,
+                ),
               ),
               Row(
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.search, color: blackColor),
-                    onPressed: () {},
-                  ),
                   IconButton(
                     icon: Icon(Icons.shopping_cart, color: blackColor),
                     onPressed: () {
@@ -158,44 +145,13 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Find by Category',
-                      style: TextStyle(fontSize: 18, fontWeight: bold),
-                    ),
-                    Text(
-                      'See All',
-                      style: TextStyle(color: primaryColor, fontSize: 14),
-                    ),
-                  ],
+                Text(
+                  "Menu:",
+                  style: blackTextStyle.copyWith(
+                    fontSize: 18,
+                    fontWeight: semiBold,
+                  ),
                 ),
-                const SizedBox(height: 16),
-                if (menuProvider.category != null)
-                  GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      childAspectRatio: 1,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                    ),
-                    itemCount: menuProvider.category!.length,
-                    itemBuilder: (context, index) {
-                      final item = menuProvider.category![index];
-                      return CategoryCard(
-                        title: item.name,
-                        icon: Icons.fastfood,
-                        onPressed: () {},
-                      );
-                    },
-                  )
-                else
-                  const Center(child: Text('No categories available')),
-                const SizedBox(height: 16),
                 if (menuProvider.menu != null)
                   GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
