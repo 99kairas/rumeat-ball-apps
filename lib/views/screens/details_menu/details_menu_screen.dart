@@ -25,10 +25,8 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<DetailsMenuViewModel>(context, listen: false)
-          .getDetailMenu(menuID: widget.menuID);
-    });
+    Provider.of<DetailsMenuViewModel>(context, listen: false)
+        .getDetailMenu(menuID: widget.menuID);
   }
 
   @override
