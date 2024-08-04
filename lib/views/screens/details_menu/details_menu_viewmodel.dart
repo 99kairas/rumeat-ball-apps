@@ -13,7 +13,7 @@ class DetailsMenuViewModel with ChangeNotifier {
     _isLoading = true;
     await Future.delayed(const Duration(seconds: 1));
     final result = await DetailMenuService().getDetailMenu(menuID: menuID);
-    _menu = result.response;
+    _menu = result;
     _isLoading = false;
     notifyListeners();
   }

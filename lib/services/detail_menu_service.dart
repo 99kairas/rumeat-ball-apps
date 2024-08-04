@@ -5,14 +5,14 @@ import 'package:rumeat_ball_apps/shared/shared_methods.dart';
 
 class DetailMenuService {
   Dio dio = Dio();
-  Future<GetDetailMenuResponse> getDetailMenu({String? menuID}) async {
+  Future<DetailMenu> getDetailMenu({String? menuID}) async {
     try {
       final response = await dio.get(
         '${APIConstant.baseUrl}/menu/$menuID',
       );
-      return GetDetailMenuResponse.fromJson(response.data);
+      return DetailMenu.fromJson(response.data["response"]);
     } on DioException catch (e) {
-      return GetDetailMenuResponse.fromJson(e.response?.data);
+      return DetailMenu.fromJson(e.response?.data);
     }
   }
 

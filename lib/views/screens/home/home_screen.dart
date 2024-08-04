@@ -169,8 +169,8 @@ class HomePage extends StatelessWidget {
                       return FoodCard(
                         image: item.image,
                         title: item.name,
-                        rating: item.averageRating ?? 4.5,
-                        comment: item.commentCount ?? 4,
+                        rating: item.averageRating ?? 0.0,
+                        comment: item.commentCount ?? 0,
                         price: item.price,
                         onTap: () {
                           Navigator.push(

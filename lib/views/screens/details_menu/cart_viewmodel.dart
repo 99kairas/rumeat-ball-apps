@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:rumeat_ball_apps/models/cart_model.dart';
+import 'package:rumeat_ball_apps/models/get_detail_menu_response.dart';
 import 'package:rumeat_ball_apps/models/get_order_by_id_response.dart';
 import 'package:rumeat_ball_apps/services/detail_menu_service.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
@@ -9,6 +10,19 @@ class CartModel with ChangeNotifier {
   final List<CartItem> _items = [];
 
   List<CartItem> get items => _items;
+
+  void addToCart(DetailMenu menu, int quantity, BuildContext context) {
+    addItem(
+      CartItem(
+        id: menu.id!,
+        name: menu.name!,
+        price: menu.price!,
+        image: menu.image!,
+        quantity: quantity,
+      ),
+      context,
+    );
+  }
 
   void addItem(CartItem item, BuildContext context) {
     int index = _items.indexWhere((element) => element.id == item.id);

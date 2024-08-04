@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:rumeat_ball_apps/models/cart_model.dart';
+import 'package:rumeat_ball_apps/models/get_detail_menu_response.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/cart_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/details_menu_viewmodel.dart';
@@ -21,22 +20,24 @@ class DetailsMenuScreen extends StatefulWidget {
 }
 
 class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
-  int quantity = 1; // Initial quantity
+  int quantity = 1;
 
   @override
   void initState() {
     super.initState();
-    Provider.of<DetailsMenuViewModel>(context, listen: false)
-        .getDetailMenu(menuID: widget.menuID);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<DetailsMenuViewModel>(context, listen: false)
+          .getDetailMenu(menuID: widget.menuID);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final menuProvider = Provider.of<DetailsMenuViewModel>(context);
-    final cartProvider = Provider.of<CartModel>(context); // Get cart provider
+    final cartProvider = Provider.of<CartModel>(context);
     final menu = menuProvider.menu;
     return Scaffold(
-      body: menuProvider.isLoading
+      body: menuProvider.isLoading == true
           ? Center(
               child: LoadingAnimationWidget.fourRotatingDots(
                 color: primaryColor,
@@ -116,7 +117,7 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
                                   avatar:
                                       Icon(Icons.comment, color: primaryColor),
                                   label: Text(
-                                    '5',
+                                    '${menu?.commentCount ?? 0}',
                                     style: greyTextStyle.copyWith(),
                                   ),
                                 ),
@@ -124,7 +125,7 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
                                 Chip(
                                   avatar: Icon(Icons.star, color: primaryColor),
                                   label: Text(
-                                    '4.5',
+                                    '${menu?.averageRating ?? 0}',
                                     style: greyTextStyle.copyWith(),
                                   ),
                                 ),
@@ -170,25 +171,21 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
                               ],
                             ),
                             const SizedBox(height: 16),
-                            const Column(
-                              children: [
-                                CommentCard(
-                                  name:
-                                      "RizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizkiRizki",
-                                  rating: 5,
-                                  description:
-                                      'Desain antarmuka pengguna (UI design) adalah bagian penting dari pengembangan produk digital yang efektif. UI design melibatkan merancang antarmuka pengguna yang mudah digunakan dan menarik, serta memperhatikan aspek-aspek seperti navigasi, tata letak, interaksi, dan estetika visual. Kursus ini akan memberikan pengantar tentang UI design dan membahas prinsip-prinsip desain antarmuka pengguna yang baik.',
-                                  profileImage: 'assets/images/burger1.png',
-                                ),
-                                CommentCard(
-                                  name: "Rizki",
-                                  rating: 2,
-                                  description: 'Pizza',
-                                  profileImage: 'assets/images/burger1.png',
-                                ),
-                                // Add more CommentCard widgets as needed
-                              ],
-                            ),
+                            menu?.comments != null && menu!.comments!.isNotEmpty
+                                ? Column(
+                                    children: menu.comments!.map((comment) {
+                                      return CommentCard(comment: comment);
+                                    }).toList(),
+                                  )
+                                : Center(
+                                    child: Text(
+                                      'No comments available.',
+                                      style: greyTextStyle.copyWith(
+                                        fontSize: 14,
+                                        fontWeight: regular,
+                                      ),
+                                    ),
+                                  ),
                             const SizedBox(
                                 height: 80), // To ensure button is visible
                           ],
@@ -224,17 +221,17 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
                     },
                     child: Icon(
                       Icons.remove,
-                      color: blackColor,
+                      color: primaryColor,
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
                 Text(
-                  '$quantity',
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                  quantity.toString(),
+                  style: blackTextStyle.copyWith(
+                    fontSize: 16,
+                    fontWeight: semiBold,
+                  ),
                 ),
-                const SizedBox(width: 8),
                 Container(
                   margin: const EdgeInsets.only(left: 10),
                   padding: const EdgeInsets.all(2),
@@ -251,30 +248,24 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
                     },
                     child: Icon(
                       Icons.add,
-                      color: blackColor,
+                      color: primaryColor,
                     ),
                   ),
                 ),
               ],
             ),
             CustomFilledButton(
+              width: 250,
+              title: "Add to Cart",
+              style: whiteTextStyle.copyWith(
+                fontSize: 16,
+                fontWeight: semiBold,
+              ),
               onPressed: () {
                 if (menu != null) {
-                  cartProvider.addItem(
-                      CartItem(
-                        id: menu.id ?? "",
-                        name: menu.name ?? "",
-                        price: menu.price ?? 0,
-                        image: menu.image ?? "",
-                        quantity: quantity,
-                      ),
-                      context);
-                  print("Adding $quantity items to cart");
-                  Navigator.pop(context);
+                  cartProvider.addToCart(menu, quantity, context);
                 }
               },
-              title: "Add to Cart",
-              width: MediaQuery.of(context).size.width * 0.4,
             ),
           ],
         ),
@@ -284,91 +275,86 @@ class _DetailsMenuScreenState extends State<DetailsMenuScreen> {
 }
 
 class CommentCard extends StatelessWidget {
-  final String name;
-  final int rating;
-  final String description;
-  final String profileImage;
-
+  final Comment comment;
   const CommentCard({
     super.key,
-    required this.name,
-    required this.rating,
-    required this.description,
-    required this.profileImage,
+    required this.comment,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      padding: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: whiteColor,
-        borderRadius: BorderRadius.circular(16.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3), // changes position of shadow
-          ),
-        ],
+        border: Border.all(
+          color: greyColor,
+        ),
+        borderRadius: BorderRadius.circular(10),
       ),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundImage: AssetImage(profileImage),
+          Row(
+            children: [
+              Icon(
+                Icons.person,
+                color: primaryColor,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                censorName(comment.userName),
+                style: blackTextStyle.copyWith(
+                  fontSize: 14,
+                  fontWeight: semiBold,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 16.0),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: blackTextStyle.copyWith(
-                    fontSize: 16,
-                    fontWeight: semiBold,
-                  ),
-                ),
-                const SizedBox(height: 8.0),
-                RatingStars(
-                  value: rating.toDouble(),
-                  starBuilder: (index, color) => Icon(
-                    Icons.star,
-                    color: color,
-                    size: 20,
-                  ),
-                  starCount: 5,
-                  starSize: 20,
-                  maxValue: 5,
-                  starSpacing: 1,
-                  maxValueVisibility: false,
-                  valueLabelVisibility: false,
-                  animationDuration: const Duration(milliseconds: 1000),
-                  valueLabelPadding:
-                      const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
-                  valueLabelMargin: const EdgeInsets.only(right: 8),
-                  starOffColor: const Color(0xffe7e8ea),
-                  starColor: Colors.yellow,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  description,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: greyTextStyle.copyWith(
-                    fontSize: 14,
-                    fontWeight: small,
-                  ),
-                ),
-              ],
+          const SizedBox(height: 8),
+          Text(
+            comment.comment ?? '',
+            style: greyTextStyle.copyWith(
+              fontSize: 14,
+              fontWeight: regular,
             ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: List.generate(5, (index) {
+              return Icon(
+                index < comment.rating! ? Icons.star : Icons.star_border,
+                color: primaryColor,
+              );
+            }),
           ),
         ],
       ),
     );
+  }
+
+  String censorName(String? fullName) {
+    if (fullName == null || fullName.isEmpty) return 'Anonymous';
+
+    // Split nama berdasarkan spasi
+    List<String> nameParts = fullName.split(' ');
+
+    // Ambil nama depan
+    String firstName = nameParts.isNotEmpty ? nameParts[0] : '';
+
+    // Ganti karakter kedua dan seterusnya dengan asterisk
+    String censoredFirstName =
+        firstName.isNotEmpty ? firstName[0] + '*' * (firstName.length - 1) : '';
+
+    // Jika ada nama belakang, sensor juga
+    String censoredLastName = '';
+    if (nameParts.length > 1) {
+      String lastName = nameParts.last;
+      censoredLastName = lastName.isNotEmpty
+          ? ' ' + lastName[0] + '*' * (lastName.length - 1)
+          : '';
+    }
+
+    return censoredFirstName + censoredLastName;
   }
 }
