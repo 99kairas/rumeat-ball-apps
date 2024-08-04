@@ -126,11 +126,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 if (currentIndex == 2) {
                                   Navigator.pushReplacementNamed(
                                       context, '/login');
+                                } else {
+                                  _controller.nextPage(
+                                    duration: const Duration(milliseconds: 400),
+                                    curve: Curves.linear,
+                                  );
                                 }
-                                _controller.nextPage(
-                                  duration: const Duration(milliseconds: 400),
-                                  curve: Curves.linear,
-                                );
                               },
                               child: Text(
                                 currentIndex == 2 ? "Get Started" : "Next",

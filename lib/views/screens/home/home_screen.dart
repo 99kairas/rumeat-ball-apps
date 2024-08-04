@@ -3,7 +3,6 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/cart_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/details_menu_screen.dart';
-import 'package:rumeat_ball_apps/views/screens/home/category_card.dart';
 import 'package:rumeat_ball_apps/views/screens/home/food_card.dart';
 import 'package:rumeat_ball_apps/views/screens/home/home_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/orders/order_screen.dart';
