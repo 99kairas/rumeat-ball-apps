@@ -11,17 +11,26 @@ class CartModel with ChangeNotifier {
 
   List<CartItem> get items => _items;
 
+  bool isUserLoggedIn() {
+    return true;
+  }
+
   void addToCart(DetailMenu menu, int quantity, BuildContext context) {
-    addItem(
-      CartItem(
-        id: menu.id!,
-        name: menu.name!,
-        price: menu.price!,
-        image: menu.image!,
-        quantity: quantity,
-      ),
-      context,
-    );
+    if (isUserLoggedIn()) {
+      addItem(
+        CartItem(
+          id: menu.id!,
+          name: menu.name!,
+          price: menu.price!,
+          image: menu.image!,
+          quantity: quantity,
+        ),
+        context,
+      );
+    } else {
+      // Arahkan ke halaman login
+      Navigator.pushNamed(context, '/login');
+    }
   }
 
   void addItem(CartItem item, BuildContext context) {

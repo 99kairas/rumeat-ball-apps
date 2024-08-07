@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:rumeat_ball_apps/shared/shared_methods.dart';
 import 'package:rumeat_ball_apps/views/screens/profile/personal_data_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/profile/profile_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
@@ -25,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final profileProvider = Provider.of<ProfileViewModel>(context);
     final _user = profileProvider.user;
-    return Scaffold(
+    return  Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -142,7 +143,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     fontSize: 16,
                     fontWeight: regular,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    SharedPref.removeToken();
+                    Navigator.pushReplacementNamed(context, '/login');
+                  },
                 ),
                 const SizedBox(
                   height: 20,

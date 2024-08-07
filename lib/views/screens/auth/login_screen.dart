@@ -148,6 +148,33 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 50),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "You're Admin?",
+                      style: blackTextStyle.copyWith(
+                        fontSize: 14,
+                        fontWeight: regular,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, '/admin-login');
+                        loginProvider.emailController.clear();
+                        loginProvider.passwordController.clear();
+                      },
+                      child: Text(
+                        "Sign In As Admin",
+                        style: greyTextStyle.copyWith(
+                          fontSize: 14,
+                          fontWeight: regular,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

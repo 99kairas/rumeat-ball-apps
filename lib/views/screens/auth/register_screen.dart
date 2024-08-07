@@ -184,7 +184,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(context, '/login');
+                          },
                           child: Text(
                             "Sign In",
                             style: primaryTextStyle.copyWith(

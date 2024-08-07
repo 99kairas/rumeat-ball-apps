@@ -82,6 +82,9 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                     loginProvider.validatePassword(p0);
                   },
                 ),
+                const SizedBox(
+                  height: 50,
+                ),
                 SizedBox(
                   width: double.infinity,
                   child: CustomFilledButton(
@@ -114,7 +117,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/login');
+                        Navigator.pushReplacementNamed(context, '/login');
                         loginProvider.emailController.clear();
                         loginProvider.passwordController.clear();
                       },
