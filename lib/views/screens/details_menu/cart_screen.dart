@@ -5,7 +5,47 @@ import 'package:rumeat_ball_apps/views/screens/details_menu/cart_viewmodel.dart'
 import 'package:rumeat_ball_apps/views/screens/details_menu/checkout_screen.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
+  @override
+  _CartScreenState createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _checkTokenAndLoadCart();
+  }
+
+  Future<void> _checkTokenAndLoadCart() async {
+    final token = await SharedPref.getToken();
+    if (token == null) {
+      // Show a dialog to inform the user
+      showDialog(
+        context: context,
+        barrierDismissible: false, // Prevents dismissal by tapping outside
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Not Logged In'),
+            content: Text('You need to log in to view your cart.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
+                child: Text('Log In'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // User is logged in, proceed with cart operations
+      Provider.of<CartModel>(context, listen: false).notifyListeners();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartModel>(context);
@@ -124,7 +164,7 @@ class CartScreen extends StatelessWidget {
                     onPressed: () async {
                       final orderID =
                           await cartProvider.createOrderCart(context);
-                      print("ini adalah cart screen : ${orderID}");
+                      print("Order ID: ${orderID}");
                       if (orderID != null && orderID.isNotEmpty) {
                         Navigator.push(
                           context,

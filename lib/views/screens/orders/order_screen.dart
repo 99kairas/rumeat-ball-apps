@@ -7,11 +7,51 @@ import 'package:rumeat_ball_apps/views/screens/orders/details_order_history_scre
 import 'package:rumeat_ball_apps/views/screens/orders/order_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 
-class OrderScreen extends StatelessWidget {
+class OrderScreen extends StatefulWidget {
+  @override
+  _OrderScreenState createState() => _OrderScreenState();
+}
+
+class _OrderScreenState extends State<OrderScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _checkTokenAndLoadOrders();
+  }
+
+  Future<void> _checkTokenAndLoadOrders() async {
+    final token = await SharedPref.getToken();
+    if (token == null) {
+      // Show a dialog to inform the user
+      showDialog(
+        context: context,
+        barrierDismissible: false, // Prevents dismissal by tapping outside
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Not Logged In'),
+            content: Text('You need to log in to view your order history.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
+                child: Text('Log In'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // User is logged in, fetch orders
+      Provider.of<OrderViewModel>(context, listen: false).fetchOrders();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => OrderViewModel()..fetchOrders(),
+      create: (context) => OrderViewModel(),
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -107,8 +147,6 @@ class OrderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // order.status != "cart"
-        // ?
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -116,15 +154,6 @@ class OrderCard extends StatelessWidget {
                 DetailsOrderHistoryScreen(orderId: order.id ?? ""),
           ),
         );
-        //     :
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => CheckoutScreen(
-        //       orderID: order.id ?? "",
-        //     ),
-        //   ),
-        // );
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0),
