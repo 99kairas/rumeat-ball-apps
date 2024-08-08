@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
@@ -20,13 +18,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ProfileViewModel>(context, listen: false).getUserInfo(context);
+    Future.microtask(() => _checkTokenAndLoadProfile());
   }
 
+  Future<void> _checkTokenAndLoadProfile() async {
+    final token = await SharedPref.getToken();
+    print("tes token : $token");
+    if (token == null) {
+      Navigator.of(context).pushReplacementNamed('/login');
+    } else {
+      // Token ditemukan, muat informasi profil
+      Provider.of<ProfileViewModel>(context, listen: false)
+          .getUserInfo(context);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final profileProvider = Provider.of<ProfileViewModel>(context);
     final _user = profileProvider.user;
-    return  Scaffold(
+    return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(

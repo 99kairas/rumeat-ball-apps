@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
@@ -19,9 +20,16 @@ class ProfileService with ChangeNotifier {
           headers: APIConstant.auth('$token'),
         ),
       );
-      return GetUserProfileResponse.fromJson(response.data);
+      final jsonResponse = response.data as Map<String, dynamic>;
+      return GetUserProfileResponse.fromJson(jsonResponse);
     } on DioException catch (e) {
-      return GetUserProfileResponse.fromJson(e.response?.data);
+      final errorResponse = e.response?.data;
+      if (errorResponse is String) {
+        final errorJson = json.decode(errorResponse) as Map<String, dynamic>;
+        return GetUserProfileResponse.fromJson(errorJson);
+      } else {
+        return GetUserProfileResponse.fromJson({});
+      }
     }
   }
 
