@@ -23,13 +23,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _checkTokenAndLoadProfile() async {
     final token = await SharedPref.getToken();
-    print("tes token : $token");
     if (token == null) {
-      Navigator.of(context).pushReplacementNamed('/login');
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Not Logged In'),
+            content: Text('You need to log in to view your profile.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
+                child: Text('Log In'),
+              ),
+            ],
+          );
+        },
+      );
     } else {
-      // Token ditemukan, muat informasi profil
-      Provider.of<ProfileViewModel>(context, listen: false)
-          .getUserInfo(context);
+      Provider.of<ProfileViewModel>(context, listen: false).notifyListeners();
     }
   }
 

@@ -17,6 +17,7 @@ class PersonalDataViewModel with ChangeNotifier {
   void getUserInfo(BuildContext context) async {
     try {
       _isLoading = true;
+      await Future.delayed(const Duration(seconds: 1));
       final result = await ProfileService().getUserProfile();
       if (result.response != null) {
         _user = result.response;

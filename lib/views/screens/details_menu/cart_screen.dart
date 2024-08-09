@@ -20,10 +20,9 @@ class _CartScreenState extends State<CartScreen> {
   Future<void> _checkTokenAndLoadCart() async {
     final token = await SharedPref.getToken();
     if (token == null) {
-      // Show a dialog to inform the user
       showDialog(
         context: context,
-        barrierDismissible: false, // Prevents dismissal by tapping outside
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Not Logged In'),
@@ -31,7 +30,7 @@ class _CartScreenState extends State<CartScreen> {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop();
                   Navigator.pushReplacementNamed(context, '/login');
                 },
                 child: Text('Log In'),
@@ -41,7 +40,6 @@ class _CartScreenState extends State<CartScreen> {
         },
       );
     } else {
-      // User is logged in, proceed with cart operations
       Provider.of<CartModel>(context, listen: false).notifyListeners();
     }
   }

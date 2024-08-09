@@ -12,8 +12,10 @@ class DetailsOrderHistoryViewModel extends ChangeNotifier {
   void getDetailsOrderHistory(BuildContext context, {String? orderID}) async {
     try {
       _isLoading = true;
+      await Future.delayed(const Duration(seconds: 1));
       notifyListeners();
-      final result = await DetailOrderHistoryService().getDetailsOrderHistory(orderID: orderID);
+      final result = await DetailOrderHistoryService()
+          .getDetailsOrderHistory(orderID: orderID);
       if (result != null) {
         _orderHistoryItems = result;
         print("Order History ID in ViewModel: ${_orderHistoryItems?.id}");

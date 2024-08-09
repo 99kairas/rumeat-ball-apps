@@ -12,6 +12,7 @@ import 'package:rumeat_ball_apps/views/screens/details_menu/details_menu_viewmod
 import 'package:rumeat_ball_apps/views/screens/home/home_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/home/home_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/orders/details_order_history_viewmodel.dart';
+import 'package:rumeat_ball_apps/views/screens/orders/order_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/otp/otp_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/otp/otp_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/profile/personal_data_viewmodel.dart';
@@ -51,6 +52,9 @@ void main() {
         ),
         ChangeNotifierProvider<CheckoutViewModel>(
           create: (_) => CheckoutViewModel(),
+        ),
+        ChangeNotifierProvider<OrderViewModel>(
+          create: (_) => OrderViewModel(),
         ),
       ],
       child: const MyApp(),

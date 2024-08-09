@@ -14,6 +14,7 @@ class ProfileViewModel with ChangeNotifier {
 
   void getUserInfo(BuildContext context) async {
     _isLoading = true;
+    await Future.delayed(const Duration(seconds: 1));
     final result = await ProfileService().getUserProfile();
     if (result.response != "") {
       _user = result.response;
