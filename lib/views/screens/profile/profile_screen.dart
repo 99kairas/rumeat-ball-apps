@@ -85,13 +85,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: greyColor,
                         borderRadius: BorderRadius.circular(61),
                         image: DecorationImage(
-                            image: _user?.profileImage != "" ||
-                                    _user?.profileImage != null
-                                ? NetworkImage(_user?.profileImage ?? "")
-                                    as ImageProvider
-                                : const AssetImage(
-                                    'assets/images/profile1.png',
-                                  )),
+                          image: _user?.profileImage != "" &&
+                                  _user?.profileImage != null
+                              ? NetworkImage(_user!.profileImage!)
+                              : const AssetImage('assets/images/profile1.png')
+                                  as ImageProvider,
+                        ),
                       ),
                     ),
                     Text(
