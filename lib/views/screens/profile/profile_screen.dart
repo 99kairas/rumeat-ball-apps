@@ -44,7 +44,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
       );
     } else {
-      Provider.of<ProfileViewModel>(context, listen: false).notifyListeners();
+      Provider.of<ProfileViewModel>(context, listen: false)
+          .getUserInfo(context);
     }
   }
 

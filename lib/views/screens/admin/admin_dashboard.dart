@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rumeat_ball_apps/shared/shared_methods.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 
 class AdminDashboard extends StatefulWidget {
@@ -89,7 +90,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
             _onDrawerItemTapped(3);
           }),
           const Divider(),
-          _buildDrawerItem(Icons.logout, 'Logout', () {}),
+          _buildDrawerItem(Icons.logout, 'Logout', () {
+            SharedPref.removeToken();
+            Navigator.pushReplacementNamed(context, '/login');
+          }),
         ],
       ),
     );

@@ -80,24 +80,39 @@ class AdminViewModel with ChangeNotifier {
         '${APIConstant.baseUrl}/admin/login',
         data: {
           'email': emailController.text,
-          'password': passwordController.text
+          'password': passwordController.text,
         },
       );
+
+      // Cek status kode terlebih dahulu
       if (response.statusCode == 200 || response.statusCode == 201) {
-        saveToken(
-          response.data['response']['token'],
-        );
-        scaffoldMessengerSuccess(
-          context: context,
-          title: response.data['message'],
-        );
-        navigateToDashboard(context);
+        final token = response.data['response']['token'];
+        final role =
+            response.data['response']['role']; // Mendapatkan role dari response
+        if (role == 'admin') {
+          saveToken(token);
+
+          scaffoldMessengerSuccess(
+            context: context,
+            title: response.data['message'],
+          );
+          navigateToDashboard(context);
+        } else {
+          scaffoldMessengerFailed(
+            context: context,
+            title:
+                'Unauthorized: You do not have access to the admin dashboard.',
+          );
+        }
       }
     } on DioException catch (e) {
       scaffoldMessengerFailed(
-          context: context, title: '${e.response?.data['response']}');
+        context: context,
+        title: '${e.response?.data['response']}',
+      );
     }
   }
+
   // End of Provider
 
   void navigateToDashboard(BuildContext context) {

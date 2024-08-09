@@ -13,19 +13,20 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
+  late Future<void> _ordersFuture;
+
   @override
   void initState() {
     super.initState();
-    _checkTokenAndLoadOrders();
+    _ordersFuture = _checkTokenAndLoadOrders();
   }
 
   Future<void> _checkTokenAndLoadOrders() async {
     final token = await SharedPref.getToken();
     if (token == null) {
-      // Show a dialog to inform the user
       showDialog(
         context: context,
-        barrierDismissible: false, // Prevents dismissal by tapping outside
+        barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Not Logged In'),
@@ -33,7 +34,7 @@ class _OrderScreenState extends State<OrderScreen> {
             actions: <Widget>[
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop();
                   Navigator.pushReplacementNamed(context, '/login');
                 },
                 child: Text('Log In'),
@@ -43,96 +44,89 @@ class _OrderScreenState extends State<OrderScreen> {
         },
       );
     } else {
-      // User is logged in, fetch orders
-      Provider.of<OrderViewModel>(context, listen: false).fetchOrders();
+      final viewModel = Provider.of<OrderViewModel>(context, listen: false);
+      await viewModel.fetchOrders();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => OrderViewModel(),
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(
-            'Order History',
-            style: blackTextStyle.copyWith(
-              fontSize: 18,
-              fontWeight: semiBold,
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          'Order History',
+          style: blackTextStyle.copyWith(
+            fontSize: 18,
+            fontWeight: semiBold,
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Consumer<OrderViewModel>(
-            builder: (context, viewModel, child) {
-              if (viewModel.isLoading) {
-                return Center(
-                  child: LoadingAnimationWidget.fourRotatingDots(
-                    color: primaryColor,
-                    size: 50,
-                  ),
-                );
-              }
+      ),
+      body: FutureBuilder<void>(
+        future: _ordersFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: LoadingAnimationWidget.fourRotatingDots(
+                color: primaryColor,
+                size: 50,
+              ),
+            );
+          }
 
-              if (viewModel.errorMessage.isNotEmpty) {
-                return Center(child: Text(viewModel.errorMessage));
-              }
+          final viewModel = Provider.of<OrderViewModel>(context);
 
-              if (viewModel.orders.isEmpty) {
-                return Center(
-                  child: SizedBox(
-                    width: 327,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          "assets/images/img_smiling.png",
-                          height: 100,
-                          width: 100,
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Text(
-                          "No Orders",
-                          style: primaryTextStyle.copyWith(
-                            fontSize: 20,
-                            fontWeight: bold,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Text(
-                          textAlign: TextAlign.center,
-                          "Looks like you haven't ordered anything yet",
-                          style: greyTextStyle.copyWith(
-                            fontSize: 16,
-                            fontWeight: regular,
-                          ),
-                        ),
-                      ],
+          if (viewModel.errorMessage.isNotEmpty) {
+            return Center(child: Text(viewModel.errorMessage));
+          }
+
+          if (viewModel.orders.isEmpty) {
+            return Center(
+              child: SizedBox(
+                width: 327,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/images/img_smiling.png",
+                      height: 100,
+                      width: 100,
                     ),
-                  ),
-                );
-              }
+                    const SizedBox(height: 12),
+                    Text(
+                      "No Orders",
+                      style: primaryTextStyle.copyWith(
+                        fontSize: 20,
+                        fontWeight: bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      textAlign: TextAlign.center,
+                      "Looks like you haven't ordered anything yet",
+                      style: greyTextStyle.copyWith(
+                        fontSize: 16,
+                        fontWeight: regular,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
 
-              return ListView(
-                children: [
-                  const SizedBox(height: 8),
-                  ...viewModel.orders
-                      .where((order) => order.status != "cart")
-                      .map((order) {
-                    return OrderCard(order: order);
-                  }).toList(),
-                  const SizedBox(height: 8),
-                ],
-              );
-            },
-          ),
-        ),
+          return ListView(
+            children: [
+              const SizedBox(height: 8),
+              ...viewModel.orders
+                  .where((order) => order.status != "cart")
+                  .map((order) {
+                return OrderCard(order: order);
+              }).toList(),
+              const SizedBox(height: 8),
+            ],
+          );
+        },
       ),
     );
   }

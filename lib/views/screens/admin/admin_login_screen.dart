@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rumeat_ball_apps/views/screens/admin/admin_dashboard.dart';
-import 'package:rumeat_ball_apps/views/screens/auth/login_viewmodel.dart';
+import 'package:rumeat_ball_apps/views/screens/admin/admin_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 import 'package:rumeat_ball_apps/views/widgets/buttons.dart';
 import 'package:rumeat_ball_apps/views/widgets/forms.dart';
@@ -16,7 +16,7 @@ class AdminLoginScreen extends StatefulWidget {
 class _AdminLoginScreenState extends State<AdminLoginScreen> {
   @override
   Widget build(BuildContext context) {
-    final loginProvider = Provider.of<LoginViewModel>(context);
+    final adminLoginProvider = Provider.of<AdminViewModel>(context);
     return Scaffold(
       body: ListView(
         children: [
@@ -48,11 +48,11 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                 ),
                 CustomFormField(
                   title: "Email Address",
-                  controller: loginProvider.emailController,
-                  isValid: loginProvider.isEmailValid,
-                  errorMessage: loginProvider.errorEmailMessage,
+                  controller: adminLoginProvider.emailController,
+                  isValid: adminLoginProvider.isEmailValid,
+                  errorMessage: adminLoginProvider.errorEmailMessage,
                   onChanged: (p0) {
-                    loginProvider.validateEmail(p0);
+                    adminLoginProvider.validateEmail(p0);
                   },
                 ),
                 const SizedBox(
@@ -60,26 +60,26 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                 ),
                 CustomFormField(
                   title: "Password",
-                  controller: loginProvider.passwordController,
-                  obscureText: loginProvider.isHidePassword,
+                  controller: adminLoginProvider.passwordController,
+                  obscureText: adminLoginProvider.isHidePassword,
                   suffixIcon: IconButton(
                     onPressed: () {
-                      loginProvider.showHidePassword();
+                      adminLoginProvider.showHidePassword();
                     },
                     icon: SizedBox(
                       width: 20,
                       height: 20,
                       child: Image.asset(
-                        loginProvider.isHidePassword
+                        adminLoginProvider.isHidePassword
                             ? "assets/icons/ic_eye_lock.png"
                             : "assets/icons/ic_eye.png",
                       ),
                     ),
                   ),
-                  isValid: loginProvider.isPasswordValid,
-                  errorMessage: loginProvider.errorPasswordMessage,
+                  isValid: adminLoginProvider.isPasswordValid,
+                  errorMessage: adminLoginProvider.errorPasswordMessage,
                   onChanged: (p0) {
-                    loginProvider.validatePassword(p0);
+                    adminLoginProvider.validatePassword(p0);
                   },
                 ),
                 const SizedBox(
@@ -90,13 +90,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                   child: CustomFilledButton(
                     title: "Sign In",
                     onPressed: () {
-                      // loginProvider.loginProvider(context);
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AdminDashboard()),
-                        (Route<dynamic> route) => false,
-                      );
+                      adminLoginProvider.loginProvider(context);
                     },
                     height: 52,
                     width: 327,
@@ -118,8 +112,8 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                     TextButton(
                       onPressed: () {
                         Navigator.pushReplacementNamed(context, '/login');
-                        loginProvider.emailController.clear();
-                        loginProvider.passwordController.clear();
+                        adminLoginProvider.emailController.clear();
+                        adminLoginProvider.passwordController.clear();
                       },
                       child: Text(
                         "Log In As User",
