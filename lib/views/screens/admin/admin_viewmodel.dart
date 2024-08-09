@@ -157,7 +157,11 @@ class AdminViewModel with ChangeNotifier {
 
     try {
       final response = await AdminService().fetchOrders();
-      _orders = response.response; // Ambil list AdminAllOrderResponse dari API
+      _orders = response.response
+          .where((order) =>
+              order.status == Status.PROCESSED ||
+              order.status == Status.SUCCESSED)
+          .toList(); // Filter orders
       _orders.sort((a, b) => (b.date ?? '').compareTo(a.date ?? ''));
       _isLoading = false;
       notifyListeners();

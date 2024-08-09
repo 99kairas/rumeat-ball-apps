@@ -55,8 +55,8 @@ class AdminAllOrderResponse {
       AdminAllOrderResponse(
         id: json["id"],
         userId: json["user_id"],
-        userName: userNameValues.map[json["user_name"]]!,
-        status: statusValues.map[json["status"]]!,
+        userName: userNameValues.map[json["user_name"]] ?? UserName.USERNAME,
+        status: statusValues.map[json["status"]] ?? Status.PROCESSED,
         date: json["date"],
         total: json["total"],
         items: List<OrderItem>.from(
@@ -102,14 +102,17 @@ class OrderItem {
       };
 }
 
-enum Status { CART, PROCESSED }
+enum Status { CART, PROCESSED, SUCCESSED }
 
-final statusValues =
-    EnumValues({"cart": Status.CART, "processed": Status.PROCESSED});
+final statusValues = EnumValues({
+  "cart": Status.CART,
+  "processed": Status.PROCESSED,
+  "success": Status.SUCCESSED,
+});
 
-enum UserName { RIZKI_ANDIKA }
+enum UserName { USERNAME }
 
-final userNameValues = EnumValues({"Rizki Andika": UserName.RIZKI_ANDIKA});
+final userNameValues = EnumValues({"Username": UserName.USERNAME});
 
 class EnumValues<T> {
   Map<String, T> map;
