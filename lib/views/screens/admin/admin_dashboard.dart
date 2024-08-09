@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
+import 'package:rumeat_ball_apps/views/screens/admin/admin_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 
 class AdminDashboard extends StatefulWidget {
@@ -193,20 +195,54 @@ class SummaryCard extends StatelessWidget {
 class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: const Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SummaryCard(
-              title: 'Today\'s Money',
-              color: Colors.pink,
-              icon: Icons.account_balance_wallet,
-              value: '\$53,000',
-            ),
-            SizedBox(height: 20),
-          ],
+    return ChangeNotifierProvider(
+      create: (_) => AdminViewModel()
+        ..fetchOrders()
+        ..getAllMenu(), // Fetch data saat widget dibangun
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Dashboard'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Consumer<AdminViewModel>(
+            builder: (context, viewModel, child) {
+              if (viewModel.isLoading) {
+                return Center(child: CircularProgressIndicator());
+              } else if (viewModel.errorMessage.isNotEmpty) {
+                return Center(child: Text(viewModel.errorMessage));
+              } else {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SummaryCard(
+                            title: 'Total Menus',
+                            color: Colors.pink,
+                            icon: Icons.menu_book,
+                            value: '${viewModel.menu?.length ?? 0}',
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        Expanded(
+                          child: SummaryCard(
+                            title: 'Total Orders',
+                            color: Colors.blue,
+                            icon: Icons.shopping_cart,
+                            value: '${viewModel.orders.length}',
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    // Tambahkan row atau card lain sesuai kebutuhan
+                  ],
+                );
+              }
+            },
+          ),
         ),
       ),
     );

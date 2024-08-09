@@ -1,43 +1,34 @@
+import 'package:dio/dio.dart';
+import 'package:rumeat_ball_apps/models/admin_get_all_order_response.dart';
+import 'package:rumeat_ball_apps/models/get_all_menu_response.dart';
+import 'package:rumeat_ball_apps/models/get_all_order_response.dart';
+import 'package:rumeat_ball_apps/shared/shared_methods.dart';
+
 class AdminService {
-  Future<List<User>> fetchUsers() async {
-    // Simulate network delay
-    await Future.delayed(Duration(seconds: 2));
-    return [
-      User(
-        id: '1',
-        name: 'John Doe',
-        email: 'john@example.com',
-        status: 'Active',
-        address: '123 Main St, Springfield',
-        phoneNumber: '555-1234',
-      ),
-      User(
-        id: '2',
-        name: 'Jane Smith',
-        email: 'jane@example.com',
-        status: 'Inactive',
-        address: '456 Elm St, Springfield',
-        phoneNumber: '555-5678',
-      ),
-      // Add more users as needed
-    ];
+  Dio dio = Dio();
+  Future<GetAllMenuResponse> getAllMenu() async {
+    try {
+      final response = await dio.get(
+        '${APIConstant.baseUrl}/menu',
+      );
+      return GetAllMenuResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      return GetAllMenuResponse.fromJson(e.response?.data);
+    }
   }
-}
 
-class User {
-  final String id;
-  final String name;
-  final String email;
-  final String status;
-  final String address;
-  final String phoneNumber;
-
-  User({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.status,
-    required this.address,
-    required this.phoneNumber,
-  });
+  Future<AdminGetAllOrderResponse> fetchOrders() async {
+    final token = await SharedPref.getToken();
+    try {
+      final response = await dio.get(
+        '${APIConstant.baseUrl}/admin/order',
+        options: Options(
+          headers: APIConstant.auth('$token'),
+        ),
+      );
+      return AdminGetAllOrderResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      return AdminGetAllOrderResponse.fromJson(e.response?.data ?? {});
+    }
+  }
 }

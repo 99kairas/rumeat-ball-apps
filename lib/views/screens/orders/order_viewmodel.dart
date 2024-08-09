@@ -18,7 +18,6 @@ class OrderViewModel extends ChangeNotifier {
     try {
       final response = await OrderService().fetchOrders();
       _orders = response.response?.orders ?? [];
-      print("ini adalah view model order ${_orders}");
       _orders.sort((a, b) => (b.date ?? '').compareTo(a.date ?? ''));
       _isLoading = false;
       notifyListeners();

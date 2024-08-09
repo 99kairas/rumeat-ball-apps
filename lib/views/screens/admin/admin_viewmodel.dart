@@ -1,6 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:rumeat_ball_apps/models/admin_get_all_order_response.dart';
+import 'package:rumeat_ball_apps/models/get_all_menu_response.dart';
+import 'package:rumeat_ball_apps/models/get_all_order_response.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
+import 'package:rumeat_ball_apps/views/screens/admin/admin_service.dart';
 
 class AdminViewModel with ChangeNotifier {
   TextEditingController emailController = TextEditingController();
@@ -123,5 +127,44 @@ class AdminViewModel with ChangeNotifier {
     );
     emailController.clear();
     passwordController.clear();
+  }
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  List<AllMenu>? _menu;
+  List<AllMenu>? get menu => _menu;
+
+  void getAllMenu() async {
+    _isLoading = true;
+    await Future.delayed(const Duration(seconds: 1));
+    final result = await AdminService().getAllMenu();
+
+    _menu = result.response;
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  List<AdminAllOrderResponse> _orders = [];
+  List<AdminAllOrderResponse> get orders => _orders;
+
+  String _errorMessage = '';
+  String get errorMessage => _errorMessage;
+
+  Future<void> fetchOrders() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final response = await AdminService().fetchOrders();
+      _orders = response.response; // Ambil list AdminAllOrderResponse dari API
+      _orders.sort((a, b) => (b.date ?? '').compareTo(a.date ?? ''));
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = e.toString();
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }
