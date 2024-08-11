@@ -13,7 +13,7 @@ class OrderViewModel extends ChangeNotifier {
 
   Future<void> fetchOrders() async {
     _isLoading = true;
-    // await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
 
     try {
       final response = await OrderService().fetchOrders();

@@ -258,11 +258,128 @@ class UserManagementPage extends StatelessWidget {
   }
 }
 
-class MenuManagementPage extends StatelessWidget {
+class MenuManagementPage extends StatefulWidget {
+  @override
+  _MenuManagementPageState createState() => _MenuManagementPageState();
+}
+
+class _MenuManagementPageState extends State<MenuManagementPage> {
+  @override
+  void initState() {
+    super.initState();
+    final viewModel = Provider.of<AdminViewModel>(context, listen: false);
+    viewModel.getAllMenu(); // Panggil method getAllMenu di sini
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Menu Management Page', style: TextStyle(fontSize: 24)),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Menu Management'),
+      ),
+      body: Consumer<AdminViewModel>(
+        builder: (context, viewModel, child) {
+          if (viewModel.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (viewModel.menu == null || viewModel.menu!.isEmpty) {
+            return const Center(child: Text('No menus available.'));
+          }
+
+          return Column(
+            children: [
+              // Button to Add New Menu
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    // TODO: Implement add new menu functionality
+                    print("Add New Menu");
+                  },
+                  child: const Text('Add New Menu'),
+                ),
+              ),
+
+              // List of Menus
+              Expanded(
+                child: ListView.builder(
+                  itemCount: viewModel.menu!.length,
+                  itemBuilder: (context, index) {
+                    final menu = viewModel.menu![index];
+
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Image
+                            SizedBox(
+                              width: 80,
+                              height: 80,
+                              child: Image.network(
+                                menu.image,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(width: 16.0),
+
+                            // Menu Details
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    menu.name,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8.0),
+                                  Text(menu.description),
+                                  const SizedBox(height: 8.0),
+                                  Text('Price: ${formatCurrency(menu.price)}'),
+                                ],
+                              ),
+                            ),
+
+                            // Edit Button
+                            SizedBox(
+                              width: 100,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  // TODO: Implement edit menu functionality
+                                  print("Edit ${menu.name}");
+                                },
+                                child: const Text('Edit'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
