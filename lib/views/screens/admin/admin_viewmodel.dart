@@ -223,68 +223,68 @@ class AdminViewModel with ChangeNotifier {
     }
   }
 
-  // Future<void> addMenu(String name, String description, double price,
-  //     String imageUrl, BuildContext context) async {
-  //   _isLoading = true;
-  //   notifyListeners();
+  Future<void> editMenu(BuildContext context, String menuId, String menuName,
+      String description, double price, String categoryId, File? image) async {
+    _isLoading = true;
+    notifyListeners();
 
-  //   try {
-  //     final result =
-  //         await AdminService().addMenu(name, description, price, imageUrl);
-  //     if (result.success) {
-  //       _menu!.add(result.response!);
-  //       scaffoldMessengerSuccess(
-  //         context: context,
-  //         title: "Menu added successfully!",
-  //       );
-  //     } else {
-  //       scaffoldMessengerFailed(
-  //         context: context,
-  //         title: "Failed to add menu.",
-  //       );
-  //     }
-  //   } catch (e) {
-  //     scaffoldMessengerFailed(
-  //       context: context,
-  //       title: "Error: $e",
-  //     );
-  //   }
+    final result = await AdminService().editMenu(
+      menuId,
+      menuName,
+      description,
+      price,
+      categoryId,
+      image,
+    );
 
-  //   _isLoading = false;
-  //   notifyListeners();
-  // }
+    _isLoading = false;
+    notifyListeners();
 
-  // Future<void> updateMenu(String id, String name, String description, double price,
-  //     String imageUrl, BuildContext context) async {
-  //   _isLoading = true;
-  //   notifyListeners();
+    if (result) {
+      scaffoldMessenger(
+        context: context,
+        title: 'Berhasil mengedit menu',
+        color: greenColor,
+        result: result,
+      );
+      Navigator.pop(context);
+    } else {
+      scaffoldMessenger(
+        context: context,
+        title: 'Gagal mengedit menu',
+        color: redColor,
+        result: result,
+      );
+    }
+  }
 
-  //   try {
-  //     final result = await AdminService()
-  //         .updateMenu(id, name, description, price, imageUrl);
-  //     if (result.success) {
-  //       final index = _menu!.indexWhere((menu) => menu.id == id);
-  //       if (index != -1) {
-  //         _menu![index] = result.response!;
-  //       }
-  //       scaffoldMessengerSuccess(
-  //         context: context,
-  //         title: "Menu updated successfully!",
-  //       );
-  //     } else {
-  //       scaffoldMessengerFailed(
-  //         context: context,
-  //         title: "Failed to update menu.",
-  //       );
-  //     }
-  //   } catch (e) {
-  //     scaffoldMessengerFailed(
-  //       context: context,
-  //       title: "Error: $e",
-  //     );
-  //   }
+  Future<void> deleteMenu(BuildContext context, String menuId) async {
+    _isLoading = true;
+    notifyListeners();
 
-  //   _isLoading = false;
-  //   notifyListeners();
-  // }
+    final result = await AdminService().deleteMenu(menuId);
+
+    _isLoading = false;
+    notifyListeners();
+
+    if (context.mounted) {
+      if (result) {
+        scaffoldMessenger(
+          context: context,
+          title: 'Berhasil hapus menu',
+          color: greenColor,
+          result: result,
+        );
+        // Refresh menu list after deletion
+        getAllMenu();
+      } else {
+        scaffoldMessenger(
+          context: context,
+          title: 'Gagal hapus menu',
+          color: redColor,
+          result: result,
+        );
+      }
+    }
+  }
 }

@@ -49,39 +49,38 @@ class AdminService {
     }
   }
 
-  // Future<GetAllMenuResponse> addMenu(
-  //     String name, String description, double price, String imageUrl) async {
-  //   try {
-  //     final response = await dio.post(
-  //       '${APIConstant.baseUrl}/admin/menu',
-  //       data: {
-  //         'name': name,
-  //         'description': description,
-  //         'price': price,
-  //         'image': imageUrl,
-  //       },
-  //     );
-  //     return GetAllMenuResponse.fromJson(response.data);
-  //   } on DioException catch (e) {
-  //     return GetAllMenuResponse.fromJson(e.response?.data);
-  //   }
-  // }
-
-  Future<GetAllMenuResponse> updateMenu(String id, String name,
-      String description, double price, String imageUrl) async {
+  Future<bool> editMenu(String menuId, String menuName, String description,
+      double price, String? categoryId, File? image) async {
+    final token = await SharedPref.getToken();
     try {
+      var form = FormData();
+      form.fields.add(MapEntry("name", menuName));
+      form.fields.add(MapEntry("price", price.toString()));
+      form.fields.add(MapEntry("description", description));
+      if (categoryId != null) {
+        form.fields.add(MapEntry("category_id", categoryId));
+      }
+      if (image != null) {
+        String filename = image.path.split('/').last;
+        var mediaType = MediaType.parse(
+            lookupMimeType(image.path) ?? "application/octet-stream");
+        var n = image.lengthSync();
+        var mFile = MultipartFile(image.openRead(0, n), n,
+            filename: filename, contentType: mediaType);
+        form.files.add(MapEntry("image", mFile));
+      }
+
       final response = await dio.put(
-        '${APIConstant.baseUrl}/admin/menu/$id',
-        data: {
-          'name': name,
-          'description': description,
-          'price': price,
-          'image': imageUrl,
-        },
+        '${APIConstant.baseUrl}/admin/menu/$menuId',
+        data: form,
+        options: Options(
+          headers: APIConstant.auth("$token"),
+        ),
       );
-      return GetAllMenuResponse.fromJson(response.data);
+      print(response);
+      return response.statusCode == 200;
     } on DioException catch (e) {
-      return GetAllMenuResponse.fromJson(e.response?.data);
+      return false;
     }
   }
 
@@ -115,6 +114,21 @@ class AdminService {
       );
       print(response);
       return response.statusCode == 201;
+    } on DioException catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> deleteMenu(String menuId) async {
+    final token = await SharedPref.getToken();
+    try {
+      final response = await dio.delete(
+        '${APIConstant.baseUrl}/admin/menu/$menuId',
+        options: Options(
+          headers: APIConstant.auth("$token"),
+        ),
+      );
+      return response.statusCode == 200;
     } on DioException catch (e) {
       return false;
     }

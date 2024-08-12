@@ -384,9 +384,58 @@ class _MenuManagementPageState extends State<MenuManagementPage> {
                                       ),
                                     ),
                                   );
-                                  print("Edit ${menu.name}");
                                 },
                                 child: const Text('Edit'),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.red),
+                                  foregroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                ),
+                                onPressed: () async {
+                                  final viewModel = Provider.of<AdminViewModel>(
+                                      context,
+                                      listen: false);
+
+                                  bool confirmDelete = await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Confirm Deletion'),
+                                        content: const Text(
+                                            'Are you sure you want to delete this menu item?'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(true),
+                                            child: const Text('Yes'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.of(context)
+                                                    .pop(false),
+                                            child: const Text('No'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+
+                                  // Ensure context is still valid and use the viewModel method for deletion
+                                  if (confirmDelete && context.mounted) {
+                                    await viewModel.deleteMenu(
+                                        context, menu.id);
+                                  }
+                                },
+                                child: const Text('Delete'),
                               ),
                             ),
                           ],
@@ -534,67 +583,142 @@ class _AddMenuPageState extends State<AddMenuPage> {
   }
 }
 
-class EditMenuPage extends StatelessWidget {
+class EditMenuPage extends StatefulWidget {
   final AllMenu menu;
-  final TextEditingController nameController;
-  final TextEditingController descriptionController;
-  final TextEditingController priceController;
-  final TextEditingController imageUrlController;
 
-  EditMenuPage({
-    Key? key,
-    required this.menu,
-  })  : nameController = TextEditingController(text: menu.name),
-        descriptionController = TextEditingController(text: menu.description),
-        priceController = TextEditingController(text: menu.price.toString()),
-        imageUrlController = TextEditingController(text: menu.image),
-        super(key: key);
+  EditMenuPage({Key? key, required this.menu}) : super(key: key);
+
+  @override
+  _EditMenuPageState createState() => _EditMenuPageState();
+}
+
+class _EditMenuPageState extends State<EditMenuPage> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
+  String? selectedCategoryId;
+  File? _image;
+  List<AllCategories> _categories = [];
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = widget.menu.name;
+    descriptionController.text = widget.menu.description;
+    priceController.text = widget.menu.price.toString();
+    selectedCategoryId = widget.menu.categoryId;
+    _fetchCategories();
+  }
+
+  void _fetchCategories() async {
+    final viewModel = Provider.of<AdminViewModel>(context, listen: false);
+    await viewModel.getAllCategories();
+    setState(() {
+      _categories = viewModel.categories ?? [];
+    });
+  }
+
+  Future<void> _chooseImage() async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      setState(() {
+        _image = File(result.files.single.path ?? "");
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<AdminViewModel>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Menu'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: 'Menu Name'),
+      body: ListView(
+        padding: EdgeInsets.all(16.0),
+        children: [
+          CustomFormField(
+            controller: nameController,
+            title: "Menu Name",
+            isValid: true,
+            errorMessage: 'Error',
+          ),
+          const SizedBox(height: 20),
+          Text("Description"),
+          TextFormField(
+            controller: descriptionController,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-            TextField(
-              controller: descriptionController,
-              decoration: InputDecoration(labelText: 'Description'),
+            maxLines: 3,
+          ),
+          const SizedBox(height: 20),
+          CustomFormField(
+            controller: priceController,
+            title: "Price",
+            isValid: true,
+            errorMessage: 'Error',
+          ),
+          const SizedBox(height: 20),
+          Text("Choose Image"),
+          CustomFilledButton(
+            title: "Choose Image",
+            onPressed: _chooseImage,
+          ),
+          if (_image != null)
+            Image.file(
+              _image!,
+              height: 150,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            )
+          else
+            Image.network(
+              widget.menu.image,
+              height: 150,
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
-            TextField(
-              controller: priceController,
-              decoration: InputDecoration(labelText: 'Price'),
-              keyboardType: TextInputType.number,
+          const SizedBox(height: 20),
+          Text("Category"),
+          DropdownButtonFormField<String>(
+            value: selectedCategoryId,
+            items: _categories.map((category) {
+              return DropdownMenuItem<String>(
+                value: category.id,
+                child: Text(category.name),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedCategoryId = value;
+              });
+            },
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-            TextField(
-              controller: imageUrlController,
-              decoration: InputDecoration(labelText: 'Image URL'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // final viewModel =
-                //     Provider.of<AdminViewModel>(context, listen: false);
-                // viewModel.updateMenu(
-                //     menu.id,
-                //     nameController.text,
-                //     descriptionController.text,
-                //     double.parse(priceController.text),
-                //     imageUrlController.text,
-                //     context);
-                // Navigator.pop(context);
-              },
-              child: Text('Update Menu'),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 20),
+          CustomFilledButton(
+            title: "Update Menu",
+            onPressed: () {
+              viewModel.editMenu(
+                context,
+                widget.menu.id,
+                nameController.text,
+                descriptionController.text,
+                double.tryParse(priceController.text) ?? 0,
+                selectedCategoryId ?? "",
+                _image,
+              );
+            },
+          ),
+        ],
       ),
     );
   }
