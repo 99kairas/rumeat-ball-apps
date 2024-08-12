@@ -23,6 +23,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Future<void> _checkTokenAndLoadOrders() async {
     final token = await SharedPref.getToken();
+    print(token);
     if (token == null) {
       showDialog(
         context: context,
@@ -44,8 +45,8 @@ class _OrderScreenState extends State<OrderScreen> {
         },
       );
     } else {
-      final viewModel = Provider.of<OrderViewModel>(context, listen: false);
-      await viewModel.fetchOrders();
+      Provider.of<OrderViewModel>(context, listen: false).fetchOrders();
+      // await viewModel.fetchOrders();
     }
   }
 
@@ -75,6 +76,15 @@ class _OrderScreenState extends State<OrderScreen> {
           }
 
           final viewModel = Provider.of<OrderViewModel>(context);
+
+          if (viewModel.isLoading) {
+            return Center(
+              child: LoadingAnimationWidget.fourRotatingDots(
+                color: primaryColor,
+                size: 50,
+              ),
+            );
+          }
 
           if (viewModel.errorMessage.isNotEmpty) {
             return Center(child: Text(viewModel.errorMessage));
