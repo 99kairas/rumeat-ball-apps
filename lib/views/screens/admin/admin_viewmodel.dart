@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:rumeat_ball_apps/models/admin_get_all_order_response.dart';
+import 'package:rumeat_ball_apps/models/get_all_categories_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_menu_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_order_response.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
 import 'package:rumeat_ball_apps/views/screens/admin/admin_service.dart';
+import 'package:rumeat_ball_apps/views/themes/style.dart';
+import 'package:rumeat_ball_apps/views/widgets/scaffold_messenger.dart';
 
 class AdminViewModel with ChangeNotifier {
   TextEditingController emailController = TextEditingController();
@@ -171,4 +176,115 @@ class AdminViewModel with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  List<AllCategories>? _categories;
+  List<AllCategories>? get categories => _categories;
+
+  Future<void> getAllCategories() async {
+    try {
+      final response = await AdminService().getAllCategories();
+      _categories = response.response;
+    } catch (e) {
+      _categories = [];
+    }
+    notifyListeners();
+  }
+
+  Future<void> addMenu(BuildContext context, String menuName,
+      String description, double price, String? categoryId, File? image) async {
+    _isLoading = true;
+    notifyListeners();
+
+    final result = await AdminService().addMenu(
+      menuName,
+      description,
+      price,
+      categoryId,
+      image,
+    );
+    _isLoading = false;
+    notifyListeners();
+
+    if (result) {
+      scaffoldMessenger(
+        context: context,
+        title: 'Berhasil tambah menu',
+        color: greenColor,
+        result: result,
+      );
+      Navigator.pop(context);
+    } else {
+      scaffoldMessenger(
+        context: context,
+        title: 'Gagal tambah menu',
+        color: redColor,
+        result: result,
+      );
+    }
+  }
+
+  // Future<void> addMenu(String name, String description, double price,
+  //     String imageUrl, BuildContext context) async {
+  //   _isLoading = true;
+  //   notifyListeners();
+
+  //   try {
+  //     final result =
+  //         await AdminService().addMenu(name, description, price, imageUrl);
+  //     if (result.success) {
+  //       _menu!.add(result.response!);
+  //       scaffoldMessengerSuccess(
+  //         context: context,
+  //         title: "Menu added successfully!",
+  //       );
+  //     } else {
+  //       scaffoldMessengerFailed(
+  //         context: context,
+  //         title: "Failed to add menu.",
+  //       );
+  //     }
+  //   } catch (e) {
+  //     scaffoldMessengerFailed(
+  //       context: context,
+  //       title: "Error: $e",
+  //     );
+  //   }
+
+  //   _isLoading = false;
+  //   notifyListeners();
+  // }
+
+  // Future<void> updateMenu(String id, String name, String description, double price,
+  //     String imageUrl, BuildContext context) async {
+  //   _isLoading = true;
+  //   notifyListeners();
+
+  //   try {
+  //     final result = await AdminService()
+  //         .updateMenu(id, name, description, price, imageUrl);
+  //     if (result.success) {
+  //       final index = _menu!.indexWhere((menu) => menu.id == id);
+  //       if (index != -1) {
+  //         _menu![index] = result.response!;
+  //       }
+  //       scaffoldMessengerSuccess(
+  //         context: context,
+  //         title: "Menu updated successfully!",
+  //       );
+  //     } else {
+  //       scaffoldMessengerFailed(
+  //         context: context,
+  //         title: "Failed to update menu.",
+  //       );
+  //     }
+  //   } catch (e) {
+  //     scaffoldMessengerFailed(
+  //       context: context,
+  //       title: "Error: $e",
+  //     );
+  //   }
+
+  //   _isLoading = false;
+  //   notifyListeners();
+  // }
 }

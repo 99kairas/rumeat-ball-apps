@@ -1,8 +1,16 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:rumeat_ball_apps/models/get_all_categories_response.dart';
+import 'package:rumeat_ball_apps/models/get_all_menu_response.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
 import 'package:rumeat_ball_apps/views/screens/admin/admin_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
+import 'package:rumeat_ball_apps/views/widgets/buttons.dart';
+import 'package:rumeat_ball_apps/views/widgets/forms.dart';
 
 class AdminDashboard extends StatefulWidget {
   @override
@@ -294,7 +302,12 @@ class _MenuManagementPageState extends State<MenuManagementPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    // TODO: Implement add new menu functionality
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddMenuPage(),
+                      ),
+                    );
                     print("Add New Menu");
                   },
                   child: const Text('Add New Menu'),
@@ -363,7 +376,14 @@ class _MenuManagementPageState extends State<MenuManagementPage> {
                               width: 100,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  // TODO: Implement edit menu functionality
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => EditMenuPage(
+                                        menu: menu,
+                                      ),
+                                    ),
+                                  );
                                   print("Edit ${menu.name}");
                                 },
                                 child: const Text('Edit'),
@@ -379,6 +399,202 @@ class _MenuManagementPageState extends State<MenuManagementPage> {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class AddMenuPage extends StatefulWidget {
+  @override
+  _AddMenuPageState createState() => _AddMenuPageState();
+}
+
+class _AddMenuPageState extends State<AddMenuPage> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
+  String? selectedCategoryId;
+  File? _image;
+  List<AllCategories> _categories = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCategories();
+  }
+
+  void _fetchCategories() async {
+    final viewModel = Provider.of<AdminViewModel>(context, listen: false);
+    await viewModel.getAllCategories();
+    setState(() {
+      _categories = viewModel.categories ?? [];
+    });
+  }
+
+  Future<void> _chooseImage() async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      setState(() {
+        _image = File(result.files.single.path ?? "");
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = Provider.of<AdminViewModel>(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Add New Menu'),
+      ),
+      body: ListView(
+        padding: EdgeInsets.all(16.0),
+        children: [
+          CustomFormField(
+            controller: nameController,
+            title: "Menu Name",
+            isValid: true,
+            errorMessage: 'Error',
+          ),
+          const SizedBox(height: 20),
+          Text("Description"),
+          TextFormField(
+            controller: descriptionController,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            maxLines: 3,
+          ),
+          const SizedBox(height: 20),
+          CustomFormField(
+            controller: priceController,
+            title: "Price",
+            isValid: true,
+            errorMessage: 'Error',
+          ),
+          const SizedBox(height: 20),
+          Text("Choose Image"),
+          CustomFilledButton(
+            title: "Choose Image",
+            onPressed: _chooseImage,
+          ),
+          if (_image != null)
+            Image.file(
+              _image!,
+              height: 150,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          const SizedBox(height: 20),
+          Text("Category"),
+          DropdownButtonFormField<String>(
+            value: selectedCategoryId,
+            items: _categories.map((category) {
+              return DropdownMenuItem<String>(
+                value: category.id,
+                child: Text(category.name),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedCategoryId = value;
+              });
+            },
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          CustomFilledButton(
+            title: "Add New Menu",
+            onPressed: () {
+              viewModel.addMenu(
+                context,
+                nameController.text,
+                descriptionController.text,
+                double.tryParse(priceController.text) ?? 0,
+                selectedCategoryId,
+                _image,
+              );
+              nameController.clear();
+              descriptionController.clear();
+              priceController.clear();
+              selectedCategoryId = null;
+              _image = null;
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class EditMenuPage extends StatelessWidget {
+  final AllMenu menu;
+  final TextEditingController nameController;
+  final TextEditingController descriptionController;
+  final TextEditingController priceController;
+  final TextEditingController imageUrlController;
+
+  EditMenuPage({
+    Key? key,
+    required this.menu,
+  })  : nameController = TextEditingController(text: menu.name),
+        descriptionController = TextEditingController(text: menu.description),
+        priceController = TextEditingController(text: menu.price.toString()),
+        imageUrlController = TextEditingController(text: menu.image),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Edit Menu'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(labelText: 'Menu Name'),
+            ),
+            TextField(
+              controller: descriptionController,
+              decoration: InputDecoration(labelText: 'Description'),
+            ),
+            TextField(
+              controller: priceController,
+              decoration: InputDecoration(labelText: 'Price'),
+              keyboardType: TextInputType.number,
+            ),
+            TextField(
+              controller: imageUrlController,
+              decoration: InputDecoration(labelText: 'Image URL'),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // final viewModel =
+                //     Provider.of<AdminViewModel>(context, listen: false);
+                // viewModel.updateMenu(
+                //     menu.id,
+                //     nameController.text,
+                //     descriptionController.text,
+                //     double.parse(priceController.text),
+                //     imageUrlController.text,
+                //     context);
+                // Navigator.pop(context);
+              },
+              child: Text('Update Menu'),
+            ),
+          ],
+        ),
       ),
     );
   }
