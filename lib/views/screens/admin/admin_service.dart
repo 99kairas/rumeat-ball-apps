@@ -1,13 +1,11 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:rumeat_ball_apps/models/admin_get_all_order_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_categories_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_menu_response.dart';
-import 'package:rumeat_ball_apps/models/get_all_order_response.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
 
 class AdminService {

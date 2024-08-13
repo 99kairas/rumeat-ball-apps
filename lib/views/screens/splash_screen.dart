@@ -21,10 +21,11 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _checkFirstLaunch() async {
     final prefs = await SharedPreferences.getInstance();
     final isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
-
+    await Future.delayed(Duration(seconds: 3));
     if (isFirstLaunch) {
       // Set the flag to false once onboarding is shown
       await prefs.setBool('isFirstLaunch', false);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const OnboardingScreen()),
@@ -54,8 +55,8 @@ class _SplashScreenState extends State<SplashScreen> {
           width: MediaQuery.of(context).size.width * 0.75,
           child: Image.asset("assets/images/rumeat-ball.png"),
         ),
-        duration: const Duration(milliseconds: 3500),
-        animationDuration: const Duration(milliseconds: 2000),
+        duration: const Duration(seconds: 3),
+        animationDuration: const Duration(seconds: 3),
         onAnimationEnd: () => debugPrint("On Scale End"),
       ),
     );

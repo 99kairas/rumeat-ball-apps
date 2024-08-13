@@ -724,11 +724,91 @@ class _EditMenuPageState extends State<EditMenuPage> {
   }
 }
 
-class OrderManagementPage extends StatelessWidget {
+class OrderManagementPage extends StatefulWidget {
+  @override
+  _OrderManagementPageState createState() => _OrderManagementPageState();
+}
+
+class _OrderManagementPageState extends State<OrderManagementPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Memastikan fetchOrders dipanggil setelah build selesai
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final viewModel = Provider.of<AdminViewModel>(context, listen: false);
+      viewModel.fetchOrders();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Order Management Page', style: TextStyle(fontSize: 24)),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Order Management'),
+      ),
+      body: Consumer<AdminViewModel>(
+        builder: (context, viewModel, child) {
+          if (viewModel.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (viewModel.orders.isEmpty) {
+            return const Center(child: Text('No orders available.'));
+          }
+
+          return ListView.builder(
+            itemCount: viewModel.orders.length,
+            itemBuilder: (context, index) {
+              final order = viewModel.orders[index];
+
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Order ID: ${order.id}',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Text('Date: ${order.date ?? "N/A"}'),
+                      const SizedBox(height: 8.0),
+                      Text('Status: ${order.status.name}'),
+                      const SizedBox(height: 8.0),
+                      Text('Total: ${formatCurrency(order.total ?? 0)}'),
+                      const SizedBox(height: 8.0),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Navigasi ke halaman detail order atau update status
+                        },
+                        child: const Text('View Details'),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
