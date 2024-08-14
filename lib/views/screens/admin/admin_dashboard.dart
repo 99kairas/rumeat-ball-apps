@@ -4,8 +4,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:rumeat_ball_apps/models/admin_get_all_order_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_categories_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_menu_response.dart';
+import 'package:rumeat_ball_apps/models/get_all_order_response.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
 import 'package:rumeat_ball_apps/views/screens/admin/admin_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
@@ -797,7 +799,11 @@ class _OrderManagementPageState extends State<OrderManagementPage> {
                       const SizedBox(height: 8.0),
                       ElevatedButton(
                         onPressed: () {
-                          // Navigasi ke halaman detail order atau update status
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      OrderDetailPage(order: order)));
                         },
                         child: const Text('View Details'),
                       ),
@@ -808,6 +814,62 @@ class _OrderManagementPageState extends State<OrderManagementPage> {
             },
           );
         },
+      ),
+    );
+  }
+}
+
+class OrderDetailPage extends StatelessWidget {
+  final AdminAllOrderResponse order;
+
+  const OrderDetailPage({Key? key, required this.order}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = Provider.of<AdminViewModel>(context, listen: false);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Order ID: ${order.id}'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Order ID: ${order.id}',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16.0),
+            Text('Date: ${order.date ?? "N/A"}'),
+            const SizedBox(height: 8.0),
+            Text('Status: ${order.status.name}'),
+            const SizedBox(height: 8.0),
+            Text('Total: ${formatCurrency(order.total ?? 0)}'),
+            const SizedBox(height: 24.0),
+            Text(
+              'Update Status',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8.0),
+            DropdownButton<Status>(
+              value: order.status,
+              items: Status.values.map((Status status) {
+                return DropdownMenuItem<Status>(
+                  value: status,
+                  child: Text(status.name),
+                );
+              }).toList(),
+              onChanged: (Status? newStatus) {
+                if (newStatus != null) {
+                  viewModel.updateOrderStatus(
+                      context, order.id, newStatus.name);
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

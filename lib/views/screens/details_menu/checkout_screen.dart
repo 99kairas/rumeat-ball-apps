@@ -151,13 +151,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     children: [
                       ElevatedButton(
                         onPressed: () async {
-                          print("ini order id di checkout : ${widget.orderID}");
-                          print("ini TAX id : ${totalWithTax}");
                           await checkoutViewModel.placeOrder(
                               widget.orderID, totalWithTax);
                           if (checkoutViewModel.orderModel != null) {
-                            print(
-                                "Payment URL: ${checkoutViewModel.orderModel!.paymentUrl}");
                             _launchInBrowser(Uri.parse(
                                 checkoutViewModel.orderModel!.paymentUrl));
                           } else {

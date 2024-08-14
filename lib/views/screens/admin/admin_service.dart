@@ -131,4 +131,22 @@ class AdminService {
       return false;
     }
   }
+
+  Future<bool> updateOrderStatus(String orderId, String newStatus) async {
+    final token = await SharedPref.getToken();
+    try {
+      final response = await dio.put(
+        '${APIConstant.baseUrl}/admin/order/$orderId',
+        data: {'status': newStatus},
+        options: Options(
+          headers: APIConstant.auth("$token"),
+        ),
+      );
+      print(response);
+      return response.statusCode == 200;
+    } on DioException catch (e) {
+      print('Error: ${e.message}');
+      return false;
+    }
+  }
 }

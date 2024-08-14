@@ -57,7 +57,6 @@ class OTPViewModel with ChangeNotifier {
           context: context,
           title: response.data['message'],
         );
-        navigateToHomeScreen(context);
       } else {
         scaffoldMessengerFailed(
             context: context, title: response.data['response']);

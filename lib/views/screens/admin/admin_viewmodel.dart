@@ -287,4 +287,32 @@ class AdminViewModel with ChangeNotifier {
       }
     }
   }
+
+  Future<void> updateOrderStatus(
+      BuildContext context, String orderId, String newStatus) async {
+    _isLoading = true;
+    notifyListeners();
+
+    final result = await AdminService().updateOrderStatus(orderId, newStatus);
+
+    _isLoading = false;
+    notifyListeners();
+
+    if (result) {
+      scaffoldMessenger(
+        context: context,
+        title: 'Status order berhasil diperbarui',
+        color: greenColor,
+        result: result,
+      );
+      // Optionally, navigate back or refresh the order list
+    } else {
+      scaffoldMessenger(
+        context: context,
+        title: 'Gagal memperbarui status order',
+        color: redColor,
+        result: result,
+      );
+    }
+  }
 }
