@@ -735,8 +735,6 @@ class _OrderManagementPageState extends State<OrderManagementPage> {
   @override
   void initState() {
     super.initState();
-
-    // Memastikan fetchOrders dipanggil setelah build selesai
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final viewModel = Provider.of<AdminViewModel>(context, listen: false);
       viewModel.fetchOrders();
@@ -828,6 +826,17 @@ class OrderDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<AdminViewModel>(context, listen: false);
 
+    void updateStatus(Status newStatus) async {
+      // Perbarui status di backend
+      await viewModel.updateOrderStatus(context, order.id, newStatus.name);
+
+      // Pastikan data diperbarui
+      await viewModel.fetchOrders();
+
+      // Kembali ke halaman sebelumnya
+      Navigator.pop(context);
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Order ID: ${order.id}'),
@@ -863,8 +872,7 @@ class OrderDetailPage extends StatelessWidget {
               }).toList(),
               onChanged: (Status? newStatus) {
                 if (newStatus != null) {
-                  viewModel.updateOrderStatus(
-                      context, order.id, newStatus.name);
+                  updateStatus(newStatus);
                 }
               },
             ),

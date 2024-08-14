@@ -160,6 +160,8 @@ class AdminViewModel with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
+    await Future.delayed(const Duration(seconds: 1));
+
     try {
       final response = await AdminService().fetchOrders();
       _orders = response.response
@@ -294,6 +296,8 @@ class AdminViewModel with ChangeNotifier {
     notifyListeners();
 
     final result = await AdminService().updateOrderStatus(orderId, newStatus);
+
+    await fetchOrders();
 
     _isLoading = false;
     notifyListeners();

@@ -56,7 +56,7 @@ class AdminAllOrderResponse {
         id: json["id"],
         userId: json["user_id"],
         userName: userNameValues.map[json["user_name"]] ?? UserName.USERNAME,
-        status: statusValues.map[json["status"]] ?? Status.PROCESSED,
+        status: statusValues.map[json["status"]] ?? Status.SUCCESSED,
         date: json["date"],
         total: json["total"],
         items: List<OrderItem>.from(
