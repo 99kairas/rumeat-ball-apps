@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:rumeat_ball_apps/models/admin_get_all_order_response.dart';
+import 'package:rumeat_ball_apps/models/admin_get_all_transaction_response.dart';
 import 'package:rumeat_ball_apps/models/admin_get_all_user_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_categories_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_menu_response.dart';
@@ -322,7 +323,7 @@ class AdminViewModel with ChangeNotifier {
 
   List<AllUser>? _users;
   List<AllUser>? get users => _users;
-  
+
   Future<void> getAllUsers() async {
     _isLoading = true;
     notifyListeners();
@@ -332,6 +333,27 @@ class AdminViewModel with ChangeNotifier {
     try {
       final response = await AdminService().getAllUsers();
       _users = response.response;
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = e.toString();
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  List<AllTransaction>? _transactions;
+  List<AllTransaction>? get transactions => _transactions;
+
+  Future<void> getAllTransaction() async {
+    _isLoading = true;
+    notifyListeners();
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    try {
+      final response = await AdminService().getAllTransaction();
+      _transactions = response.response;
       _isLoading = false;
       notifyListeners();
     } catch (e) {

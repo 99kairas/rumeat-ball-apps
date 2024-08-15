@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:rumeat_ball_apps/models/admin_get_all_order_response.dart';
+import 'package:rumeat_ball_apps/models/admin_get_all_transaction_response.dart';
 import 'package:rumeat_ball_apps/models/admin_get_all_user_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_categories_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_menu_response.dart';
@@ -46,7 +47,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
             MaterialPageRoute(builder: (context) => OrderManagementPage()));
         break;
       case 4:
-        // handle logout
+        _navigatorKey.currentState!.pushReplacement(MaterialPageRoute(
+            builder: (context) => TransactionManagementPage()));
         break;
     }
     Navigator.pop(context); // Close the drawer
@@ -101,6 +103,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
           }),
           _buildDrawerItem(Icons.shopping_bag, 'Order Management', () {
             _onDrawerItemTapped(3);
+          }),
+          _buildDrawerItem(Icons.money, 'Transaction Management', () {
+            _onDrawerItemTapped(4);
           }),
           const Divider(),
           _buildDrawerItem(Icons.logout, 'Logout', () {
@@ -1008,6 +1013,132 @@ class OrderDetailPage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class TransactionManagementPage extends StatefulWidget {
+  @override
+  _TransactionManagementPageState createState() =>
+      _TransactionManagementPageState();
+}
+
+class _TransactionManagementPageState extends State<TransactionManagementPage> {
+  String? _selectedStatus;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final viewModel = Provider.of<AdminViewModel>(context, listen: false);
+      viewModel.getAllTransaction();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Transaction Management'),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: DropdownButton<String>(
+              hint: const Text('Filter by Status'),
+              value: _selectedStatus,
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedStatus = newValue;
+                });
+              },
+              items: ['successed', 'failed', 'pending']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+          Expanded(
+            child: Consumer<AdminViewModel>(
+              builder: (context, viewModel, child) {
+                if (viewModel.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                List<AllTransaction> transactions =
+                    viewModel.transactions ?? [];
+
+                if (_selectedStatus != null && _selectedStatus!.isNotEmpty) {
+                  transactions = transactions
+                      .where((transaction) =>
+                          transaction.status == _selectedStatus)
+                      .toList();
+                }
+
+                if (transactions.isEmpty) {
+                  return const Center(
+                      child: Text('No transactions available.'));
+                }
+
+                return ListView.builder(
+                  itemCount: transactions.length,
+                  itemBuilder: (context, index) {
+                    final transaction = transactions[index];
+
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Transaction ID: ${transaction.id}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            Text('Order ID: ${transaction.orderId}'),
+                            const SizedBox(height: 8.0),
+                            Text('Date: ${transaction.date ?? "N/A"}'),
+                            const SizedBox(height: 8.0),
+                            Text('Status: ${transaction.status}'),
+                            const SizedBox(height: 8.0),
+                            Text(
+                                'Total: ${formatCurrency(transaction.totalPrice ?? 0)}'),
+                            const SizedBox(height: 8.0),
+                            Text('User ID: ${transaction.userId}'),
+                            const SizedBox(height: 8.0),
+                            Text('Username: ${transaction.userName ?? "N/A"}'),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
