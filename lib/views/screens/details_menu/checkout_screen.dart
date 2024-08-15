@@ -35,7 +35,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("ini di context ${widget.orderID}");
     final cartProvider = Provider.of<CartModel>(context);
     final checkoutViewModel = Provider.of<CheckoutViewModel>(context);
     final cartItems = cartProvider.items;
@@ -156,6 +155,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           if (checkoutViewModel.orderModel != null) {
                             _launchInBrowser(Uri.parse(
                                 checkoutViewModel.orderModel!.paymentUrl));
+                            Navigator.of(context).pushReplacementNamed('/home');
+                            cartProvider.clearCart();
                           } else {
                             print(
                                 "Error placing order: ${checkoutViewModel.error}");

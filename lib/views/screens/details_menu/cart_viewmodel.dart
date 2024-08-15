@@ -84,7 +84,7 @@ class CartModel with ChangeNotifier {
     return _items.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
   }
 
-  void clearCart() {
+  clearCart() {
     _items.clear();
     notifyListeners();
   }
@@ -124,7 +124,6 @@ class CartModel with ChangeNotifier {
       scaffoldMessengerFailed(
           context: context, title: '${e.response?.data['response']}');
     }
-
     return null; // Return null if something goes wrong
   }
 
