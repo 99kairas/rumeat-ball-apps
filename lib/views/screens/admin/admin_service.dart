@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:rumeat_ball_apps/models/admin_get_all_order_response.dart';
+import 'package:rumeat_ball_apps/models/admin_get_all_user_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_categories_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_menu_response.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
@@ -147,6 +148,21 @@ class AdminService {
     } on DioException catch (e) {
       print('Error: ${e.message}');
       return false;
+    }
+  }
+
+  Future<AdminGetAllUserResponse> getAllUsers() async {
+    final token = await SharedPref.getToken();
+    try {
+      final response = await dio.get(
+        '${APIConstant.baseUrl}/admin/all-user',
+        options: Options(
+          headers: APIConstant.auth('$token'),
+        ),
+      );
+      return AdminGetAllUserResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      return AdminGetAllUserResponse.fromJson(e.response?.data ?? {});
     }
   }
 }

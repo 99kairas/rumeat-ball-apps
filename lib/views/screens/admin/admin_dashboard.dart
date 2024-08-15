@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:rumeat_ball_apps/models/admin_get_all_order_response.dart';
+import 'package:rumeat_ball_apps/models/admin_get_all_user_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_categories_response.dart';
 import 'package:rumeat_ball_apps/models/get_all_menu_response.dart';
-import 'package:rumeat_ball_apps/models/get_all_order_response.dart';
 import 'package:rumeat_ball_apps/shared/shared_methods.dart';
+import 'package:rumeat_ball_apps/views/screens/admin/admin_service.dart';
 import 'package:rumeat_ball_apps/views/screens/admin/admin_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 import 'package:rumeat_ball_apps/views/widgets/buttons.dart';
@@ -34,7 +35,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
         break;
       case 1:
         _navigatorKey.currentState!.pushReplacement(
-            MaterialPageRoute(builder: (context) => UserManagementPage()));
+            MaterialPageRoute(builder: (context) => AdminUserTableScreen()));
         break;
       case 2:
         _navigatorKey.currentState!.pushReplacement(
@@ -208,7 +209,8 @@ class DashboardPage extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => AdminViewModel()
         ..fetchOrders()
-        ..getAllMenu(), // Fetch data saat widget dibangun
+        ..getAllMenu()
+        ..getAllUsers(),
       child: Scaffold(
         appBar: AppBar(
           title: Text('Dashboard'),
@@ -222,32 +224,58 @@ class DashboardPage extends StatelessWidget {
               } else if (viewModel.errorMessage.isNotEmpty) {
                 return Center(child: Text(viewModel.errorMessage));
               } else {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                return ListView(
                   children: [
-                    Row(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: SummaryCard(
-                            title: 'Total Menus',
-                            color: Colors.pink,
-                            icon: Icons.menu_book,
-                            value: '${viewModel.menu?.length ?? 0}',
-                          ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: SummaryCard(
+                                title: 'Total Menus',
+                                color: Colors.pink,
+                                icon: Icons.menu_book,
+                                value: '${viewModel.menu?.length ?? 0}',
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            Expanded(
+                              child: SummaryCard(
+                                title: 'Total Orders',
+                                color: Colors.blue,
+                                icon: Icons.shopping_cart,
+                                value: '${viewModel.orders.length}',
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 20),
-                        Expanded(
-                          child: SummaryCard(
-                            title: 'Total Orders',
-                            color: Colors.blue,
-                            icon: Icons.shopping_cart,
-                            value: '${viewModel.orders.length}',
-                          ),
+                        const SizedBox(
+                          height: 50,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: SummaryCard(
+                                title: 'Total Users',
+                                color: Colors.blue,
+                                icon: Icons.person,
+                                value: '${viewModel.users?.length ?? 0}',
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            Expanded(
+                              child: SummaryCard(
+                                title: 'Total Users',
+                                color: Colors.blue,
+                                icon: Icons.person,
+                                value: '${viewModel.users?.length ?? 0}',
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
-                    // Tambahkan row atau card lain sesuai kebutuhan
                   ],
                 );
               }
@@ -259,12 +287,114 @@ class DashboardPage extends StatelessWidget {
   }
 }
 
-class UserManagementPage extends StatelessWidget {
+class AdminUserTableScreen extends StatefulWidget {
+  @override
+  _AdminUserTableScreenState createState() => _AdminUserTableScreenState();
+}
+
+class _AdminUserTableScreenState extends State<AdminUserTableScreen> {
+  List<AllUser>? _users;
+  List<AllUser>? _filteredUsers;
+  String _selectedRole = 'all';
+  bool _isLoading = true;
+  String _errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUsers();
+  }
+
+  Future<void> _fetchUsers() async {
+    try {
+      final response = await AdminService().getAllUsers();
+      setState(() {
+        _users = response.response;
+        _filteredUsers = _users;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _filterUsers(String role) {
+    setState(() {
+      _selectedRole = role;
+      if (role == 'all') {
+        _filteredUsers = _users;
+      } else {
+        _filteredUsers = _users?.where((user) => user.role == role).toList();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('User Management Page', style: TextStyle(fontSize: 24)),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Daftar Pengguna'),
+      ),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : _errorMessage.isNotEmpty
+              ? Center(child: Text('Error: $_errorMessage'))
+              : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: DropdownButton<String>(
+                        value: _selectedRole,
+                        items: <String>['all', 'admin', 'user']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value.capitalize()),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            _filterUsers(newValue);
+                          }
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          columns: const <DataColumn>[
+                            DataColumn(label: Text('ID')),
+                            DataColumn(label: Text('Nama')),
+                            DataColumn(label: Text('Nomor Telepon')),
+                            DataColumn(label: Text('Status')),
+                          ],
+                          rows: _filteredUsers?.map((user) {
+                                return DataRow(
+                                  cells: <DataCell>[
+                                    DataCell(Text(user.userId)),
+                                    DataCell(Text(user.name)),
+                                    DataCell(Text(user.phone)),
+                                    DataCell(Text(user.status)),
+                                  ],
+                                );
+                              }).toList() ??
+                              [],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
     );
+  }
+}
+
+extension StringCapitalize on String {
+  String capitalize() {
+    return this[0].toUpperCase() + substring(1).toLowerCase();
   }
 }
 
