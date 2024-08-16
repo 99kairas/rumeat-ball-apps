@@ -11,6 +11,7 @@ import 'package:rumeat_ball_apps/views/screens/details_menu/cart_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/cart_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/checkout_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/details_menu/details_menu_viewmodel.dart';
+import 'package:rumeat_ball_apps/views/screens/forgot_password_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/home/home_screen.dart';
 import 'package:rumeat_ball_apps/views/screens/home/home_viewmodel.dart';
 import 'package:rumeat_ball_apps/views/screens/orders/details_order_history_viewmodel.dart';
@@ -80,6 +81,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/admin-login': (context) => const AdminLoginScreen(),
         '/admin-dashboard': (context) => AdminDashboard(),
+        '/forgot-password': (context) => ForgotPasswordScreen(),
         '/home': (context) => const HomeScreen(),
         '/register': (context) => const RegisterScreen(),
         '/cart': (context) => CartScreen(),

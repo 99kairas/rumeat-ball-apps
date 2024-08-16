@@ -49,4 +49,21 @@ class CheckoutService {
       throw Exception('Network error: ${e.message}');
     }
   }
+
+  Future<void> cancelOrder(String orderId) async {
+    final token = await SharedPref.getToken();
+    try {
+      final response = await dio.put(
+        '${APIConstant.baseUrl}/users/order/cancel/$orderId',
+        options: Options(
+          headers: APIConstant.auth('$token'),
+        ),
+      );
+      print("Response status: ${response.statusCode}");
+      print("Response data: ${response.data}");
+    } on DioException catch (e) {
+      print("DioException: ${e.response?.data}");
+      throw Exception('Network error: ${e.message}');
+    }
+  }
 }

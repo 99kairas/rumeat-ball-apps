@@ -183,13 +183,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Order Placed'),
-                                content: Text(
-                                    'Your order has been placed successfully!'),
+                                title: Text('Order Cancelled'),
+                                content: Text('Your order has been cancelled!'),
                                 actions: <Widget>[
                                   TextButton(
                                     child: Text('OK'),
                                     onPressed: () {
+                                      checkoutViewModel
+                                          .cancelOrder(widget.orderID);
                                       cartProvider.clearCart();
                                       Navigator.of(context).pop();
                                     },

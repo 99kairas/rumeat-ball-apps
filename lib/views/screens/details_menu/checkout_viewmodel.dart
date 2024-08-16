@@ -42,4 +42,19 @@ class CheckoutViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> cancelOrder(String orderId) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _checkoutService.cancelOrder(orderId);
+      _error = '';
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

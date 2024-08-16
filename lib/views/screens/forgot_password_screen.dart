@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:rumeat_ball_apps/views/themes/style.dart';
 import 'package:rumeat_ball_apps/views/widgets/buttons.dart';
 import 'package:rumeat_ball_apps/views/widgets/forms.dart';
@@ -44,7 +42,6 @@ class ForgotPasswordScreen extends StatelessWidget {
                   hintText: "emailAnda@email.com",
                   errorMessage: "",
                   isValid: false,
-
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.5,

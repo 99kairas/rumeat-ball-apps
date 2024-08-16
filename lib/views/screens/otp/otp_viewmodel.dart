@@ -57,6 +57,8 @@ class OTPViewModel with ChangeNotifier {
           context: context,
           title: response.data['message'],
         );
+
+        navigateToLoginScreen(context);
       } else {
         scaffoldMessengerFailed(
             context: context, title: response.data['response']);
@@ -74,10 +76,10 @@ class OTPViewModel with ChangeNotifier {
     super.dispose();
   }
 
-  void navigateToHomeScreen(BuildContext context) {
+  void navigateToLoginScreen(BuildContext context) {
     Navigator.pushNamedAndRemoveUntil(
       context,
-      '/home',
+      '/login',
       (route) => false,
     );
     _otpControllers.forEach((controller) => controller.clear());

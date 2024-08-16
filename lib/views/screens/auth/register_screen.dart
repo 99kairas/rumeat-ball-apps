@@ -141,24 +141,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const SizedBox(
                       height: 24,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            "Forgot Password?",
-                            style: primaryTextStyle.copyWith(
-                              fontSize: 14,
-                              fontWeight: regular,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 30,
-                        ),
-                      ],
-                    ),
                     SizedBox(
                       width: double.infinity,
                       child: CustomFilledButton(
