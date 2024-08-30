@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:rumeat_ball_apps/models/checkout_model.dart';
 import 'package:rumeat_ball_apps/models/get_order_by_id_response.dart';
 import 'package:rumeat_ball_apps/services/checkout_service.dart';
+import 'package:rumeat_ball_apps/views/themes/style.dart';
+import 'package:rumeat_ball_apps/views/widgets/scaffold_messenger.dart';
 
 class CheckoutViewModel extends ChangeNotifier {
   bool _isLoading = false;
@@ -55,6 +57,35 @@ class CheckoutViewModel extends ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> userUpdateOrderStatus(
+      BuildContext context, String orderId) async {
+    _isLoading = true;
+    notifyListeners();
+
+    final result =
+        await CheckoutService().userUpdateOrderStatus(orderId, "processed");
+
+    _isLoading = false;
+    notifyListeners();
+
+    if (result) {
+      scaffoldMessenger(
+        context: context,
+        title: 'Status order berhasil diperbarui',
+        color: greenColor,
+        result: result,
+      );
+      // Optionally, navigate back or refresh the order list
+    } else {
+      scaffoldMessenger(
+        context: context,
+        title: 'Gagal memperbarui status order',
+        color: redColor,
+        result: result,
+      );
     }
   }
 }

@@ -35,9 +35,6 @@ class CheckoutService {
         ),
       );
 
-      print("Response status: ${response.statusCode}");
-      print("Response data: ${response.data}");
-
       if (response.statusCode == 200 || response.statusCode == 201) {
         return TransactionModel.fromJson(response.data['response']);
       } else {
@@ -64,6 +61,24 @@ class CheckoutService {
     } on DioException catch (e) {
       print("DioException: ${e.response?.data}");
       throw Exception('Network error: ${e.message}');
+    }
+  }
+
+  Future<bool> userUpdateOrderStatus(String orderId, String newStatus) async {
+    final token = await SharedPref.getToken();
+    try {
+      final response = await dio.put(
+        '${APIConstant.baseUrl}/users/order/$orderId',
+        data: {'status': newStatus},
+        options: Options(
+          headers: APIConstant.auth("$token"),
+        ),
+      );
+      print(response);
+      return response.statusCode == 200;
+    } on DioException catch (e) {
+      print('Error: ${e.message}');
+      return false;
     }
   }
 }

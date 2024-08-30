@@ -155,6 +155,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           if (checkoutViewModel.orderModel != null) {
                             _launchInBrowser(Uri.parse(
                                 checkoutViewModel.orderModel!.paymentUrl));
+                            checkoutViewModel.userUpdateOrderStatus(
+                                context, widget.orderID);
                             Navigator.of(context).pushReplacementNamed('/home');
                             cartProvider.clearCart();
                           } else {
